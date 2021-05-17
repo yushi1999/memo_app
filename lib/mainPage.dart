@@ -58,8 +58,19 @@ class _MainPageState extends State<MainPage> {
       appBar: _appBar,
       floatingActionButton: Container(
         margin: EdgeInsets.only(bottom: 60),
-        child: FloatingActionButton(
-          child: Icon(Icons.add),
+        child: FloatingActionButton.extended(
+          icon: Icon(
+            Icons.add,
+            color: white,
+          ),
+          label: Text(
+            '作成',
+            style: TextStyle(
+              color: white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
           onPressed: () async {
             await Navigator.of(context).push(
               MaterialPageRoute(
@@ -118,7 +129,7 @@ class _MainPageState extends State<MainPage> {
             Expanded(
               child: Text(
                 item.getValue,
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 18),
               ),
             ),
             TextButton(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'sharedParts.dart';
-import 'widgets/reorderable_list_simple.dart';
+import 'widgets/ruledLineTextField.dart';
 
 class CreateMemoPage extends StatefulWidget {
   CreateMemoPage(this.memoItem);
@@ -18,6 +18,8 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
   String value;
   DateTime dateTime;
   bool isFavorite;
+
+  final globalKeyGetTextField = GlobalKey();
 
   @override
   initState() {
@@ -44,6 +46,34 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
         child: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+            child: Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.10,
+                ),
+                Stack(
+                  children: <Widget>[
+                    CustomPaint(
+                      painter: TextUnderLinePainter(globalKeyGetTextField, 150),
+                    ),
+                    TextField(
+                      style: TextStyle(fontSize: 20),
+                      key: globalKeyGetTextField,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 150,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (String text) {
+                        setState(() {
+                          value = text;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
