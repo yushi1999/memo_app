@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'mainPage.dart';
 import 'sharedParts.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,6 +33,14 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.grey,
           backgroundColor: Colors.white,
         ),
+        localizationsDelegates: [
+          GlobalCupertinoLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('ja', 'JP'),
+        ],
         home: MainPage(title: 'mainPage'),
       ),
     );

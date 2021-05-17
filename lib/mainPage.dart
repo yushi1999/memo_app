@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'mainPage.dart';
 import 'sharedParts.dart';
-import 'reorderable_list_simple.dart';
+import 'widgets/reorderable_list_simple.dart';
 
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as rol;
 
@@ -59,6 +59,7 @@ class _MainPageState extends State<MainPage> {
             handleIcon: Icon(
               Icons.drag_handle,
               color: lightGrey,
+              size: 25,
             ),
             onReorder: (oldIndex, newIndex) {
               setState(() {
@@ -72,10 +73,30 @@ class _MainPageState extends State<MainPage> {
                 color: white,
                 elevation: 0.0,
                 key: Key(item.key),
-                child: ListTile(
-                  title: item.getValue == null
-                      ? Text('null')
-                      : Text(item.getValue),
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          item.getValue,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      TextButton(
+                        child: Icon(
+                          Icons.edit_sharp,
+                          color: lightGrey,
+                        ),
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all(EdgeInsets.zero),
+                          minimumSize: MaterialStateProperty.all(Size.zero),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
                 ),
               );
             }).toList(),

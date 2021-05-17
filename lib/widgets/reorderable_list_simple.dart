@@ -158,7 +158,11 @@ class ReorderableItemSimple extends StatelessWidget {
 
     if (handleSide == ReorderableListSimpleSide.Right) children.add(item);
     children.add(rol.ReorderableListener(
-      child: Container(alignment: Alignment.centerLeft, child: icon),
+      child: Container(
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [SizedBox(width: 4), icon],
+          )),
     ));
     if (handleSide == ReorderableListSimpleSide.Left) children.add(item);
 
