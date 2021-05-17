@@ -44,7 +44,12 @@ class _MainPageState extends State<MainPage> {
   initState() {
     super.initState();
     itemsList = [];
-    List memoList = ['洗剤を買い足す', '勉強メモ', 'シャンプー買う', '今年の目標'];
+    List memoList = [
+      '洗剤を買い足すあああああああああああああああああああああああああああああ',
+      '勉強メモ',
+      'シャンプー買う\nリンス買う\nボディーソープ買う\n歯磨き粉買う\nリップ買う',
+      '今年の目標\nアプリを作る\n自然言語処理をマスターする\nお金いっぱい稼ぐ'
+    ];
     for (int i = 0; i < memoList.length; i++) {
       final newItem = MemoItem(memoList[i], i.toString());
       itemsList.add(newItem);
@@ -129,6 +134,7 @@ class _MainPageState extends State<MainPage> {
             Expanded(
               child: Text(
                 item.getValue,
+                maxLines: 4,
                 style: TextStyle(fontSize: 18),
               ),
             ),

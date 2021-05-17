@@ -16,7 +16,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
   final MemoItem memoItem;
   bool isMemoAlreadyCreated;
   String value;
-  DateTime dateTime;
+  DateTime createdDate, notificationDate;
   bool isFavorite;
 
   final globalKeyGetTextField = GlobalKey();
