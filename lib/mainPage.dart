@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'mainPage.dart';
 import 'sharedParts.dart';
+import 'reorderable_list_simple.dart';
 
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as rol;
 
@@ -53,15 +54,13 @@ class _MainPageState extends State<MainPage> {
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-          child: ReorderableListView(
+          child: ReorderableListSimple(
+            handleSide: ReorderableListSimpleSide.Left,
             onReorder: (oldIndex, newIndex) {
-              if (oldIndex < newIndex) {
-                // removing the item at oldIndex will shorten the list by 1.
-                newIndex -= 1;
-              }
-              final MemoItem model = items.removeAt(oldIndex);
               setState(() {
-                items.insert(newIndex, model);
+                MemoItem item = items[oldIndex];
+                items.remove(item);
+                items.insert(newIndex, item);
               });
             },
             children: items.map((MemoItem item) {
