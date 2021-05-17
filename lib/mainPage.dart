@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'mainPage.dart';
 import 'sharedParts.dart';
+import 'createMemoPage.dart';
 import 'widgets/reorderable_list_simple.dart';
-
-import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as rol;
 
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);
@@ -14,20 +14,17 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  List<MemoItem> items;
+  List<MemoItem> itemsList;
 
+  //AppBar
   final _appBar = AppBar(
     backgroundColor: white,
     elevation: 0.0,
     title: Text(
-      "メモ帳",
+      "Simple Memo Pad",
       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
     ),
     actions: [
-      IconButton(
-        icon: Icon(Icons.add),
-        onPressed: () {},
-      ),
       IconButton(
         icon: Icon(Icons.settings),
         onPressed: () {},
@@ -35,14 +32,22 @@ class _MainPageState extends State<MainPage> {
     ],
   );
 
+  //スライドしてメモを削除
+  final _deleteMemoAction = IconSlideAction(
+    icon: Icons.delete,
+    caption: '削除',
+    color: Colors.red[400],
+    onTap: () {},
+  );
+
   @override
   initState() {
     super.initState();
-    items = [];
+    itemsList = [];
     List memoList = ['洗剤を買い足す', '勉強メモ', 'シャンプー買う', '今年の目標'];
     for (int i = 0; i < memoList.length; i++) {
       final newItem = MemoItem(memoList[i], i.toString());
-      items.add(newItem);
+      itemsList.add(newItem);
     }
   }
 
@@ -51,11 +56,27 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       backgroundColor: white,
       appBar: _appBar,
+      floatingActionButton: Container(
+        margin: EdgeInsets.only(bottom: 60),
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return CreateMemoPage(null);
+                },
+              ),
+            );
+          },
+        ),
+      ),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           child: ReorderableListSimple(
             handleSide: ReorderableListSimpleSide.Left,
+            //ドラッグハンドルのアイコン
             handleIcon: Icon(
               Icons.drag_handle,
               color: lightGrey,
@@ -63,44 +84,67 @@ class _MainPageState extends State<MainPage> {
             ),
             onReorder: (oldIndex, newIndex) {
               setState(() {
-                MemoItem item = items[oldIndex];
-                items.remove(item);
-                items.insert(newIndex, item);
+                MemoItem item = itemsList[oldIndex];
+                itemsList.remove(item);
+                itemsList.insert(newIndex, item);
               });
             },
-            children: items.map((MemoItem item) {
-              return Card(
-                color: white,
-                elevation: 0.0,
-                key: Key(item.key),
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          item.getValue,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      TextButton(
-                        child: Icon(
-                          Icons.edit_sharp,
-                          color: lightGrey,
-                        ),
-                        style: ButtonStyle(
-                          padding: MaterialStateProperty.all(EdgeInsets.zero),
-                          minimumSize: MaterialStateProperty.all(Size.zero),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                ),
+            children: itemsList.map((MemoItem item) {
+              return Slidable(
+                actionExtentRatio: 0.3,
+                actionPane: SlidableDrawerActionPane(),
+                secondaryActions: [
+                  _deleteMemoAction,
+                ],
+                child: memoCard(item),
               );
             }).toList(),
           ),
+        ),
+      ),
+    );
+  }
+
+  //メモのカード一つ分の内容
+  Widget memoCard(MemoItem item) {
+    return Card(
+      color: white,
+      elevation: 0.0,
+      key: Key(item.key),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 15),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                item.getValue,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            TextButton(
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Icon(
+                  Icons.edit_sharp,
+                  color: lightGrey,
+                ),
+              ),
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(EdgeInsets.zero),
+                minimumSize: MaterialStateProperty.all(Size.zero),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return CreateMemoPage(item);
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
