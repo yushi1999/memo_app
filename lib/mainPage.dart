@@ -39,7 +39,7 @@ class _MainPageState extends State<MainPage> {
   initState() {
     super.initState();
     items = [];
-    List memoList = ['a', 'b', 'c', 'd', 'e'];
+    List memoList = ['洗剤を買い足す', '勉強メモ', 'シャンプー買う', '今年の目標'];
     for (int i = 0; i < memoList.length; i++) {
       final newItem = MemoItem(memoList[i], i.toString());
       items.add(newItem);
@@ -56,6 +56,10 @@ class _MainPageState extends State<MainPage> {
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
           child: ReorderableListSimple(
             handleSide: ReorderableListSimpleSide.Left,
+            handleIcon: Icon(
+              Icons.drag_handle,
+              color: lightGrey,
+            ),
             onReorder: (oldIndex, newIndex) {
               setState(() {
                 MemoItem item = items[oldIndex];
@@ -65,6 +69,8 @@ class _MainPageState extends State<MainPage> {
             },
             children: items.map((MemoItem item) {
               return Card(
+                color: white,
+                elevation: 0.0,
                 key: Key(item.key),
                 child: ListTile(
                   title: item.getValue == null
