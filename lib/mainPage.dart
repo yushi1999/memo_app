@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:expandable/expandable.dart';
 import 'sharedParts.dart';
+import 'settingPage.dart';
 import 'createMemoPage.dart';
 import 'widgets/reorderable_list_simple.dart';
+import 'widgets/customExpansionTile.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);
@@ -14,22 +17,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<MemoItem> itemsList;
-
-  //AppBar
-  final _appBar = AppBar(
-    backgroundColor: white,
-    elevation: 0.0,
-    title: Text(
-      "Simple Memo Pad",
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-    ),
-    actions: [
-      IconButton(
-        icon: Icon(Icons.settings),
-        onPressed: () {},
-      ),
-    ],
-  );
 
   //スライドしてメモを削除
   final _deleteMemoAction = IconSlideAction(
@@ -63,7 +50,28 @@ class _MainPageState extends State<MainPage> {
 
     return Scaffold(
       backgroundColor: white,
-      appBar: _appBar,
+      appBar: AppBar(
+        backgroundColor: white,
+        elevation: 0.0,
+        title: Text(
+          "Simple Memo Pad",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return SettingPage();
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       floatingActionButton: Container(
         margin: EdgeInsets.only(bottom: 60),
         child: FloatingActionButton.extended(
@@ -126,58 +134,59 @@ class _MainPageState extends State<MainPage> {
 
   //メモのカード一つ分の内容
   Widget memoCard(MemoItem item) {
-    bool tapped = false;
+    var isExpanded = false;
     return Card(
       color: white,
       elevation: 0.0,
       key: Key(item.key),
-      child: TextButton(
-        onPressed: () {
-          setState(() {
-            tapped = !tapped;
-          });
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 6),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  item.getValue,
-                  maxLines: tapped ? 150 : 4,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: black,
-                  ),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 6),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                item.getValue,
+                maxLines: 4,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: black,
                 ),
               ),
-              TextButton(
-                child: Padding(
-                  padding: EdgeInsets.all(4),
-                  child: Icon(
-                    Icons.edit_sharp,
-                    color: lightGrey,
-                  ),
+            ),
+            TextButton(
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Icon(
+                  Icons.edit_sharp,
+                  color: lightGrey,
                 ),
-                style: ButtonStyle(
-                  padding: MaterialStateProperty.all(EdgeInsets.zero),
-                  minimumSize: MaterialStateProperty.all(Size.zero),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                onPressed: () async {
-                  await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return CreateMemoPage(item);
-                      },
-                    ),
-                  );
-                },
               ),
-            ],
-          ),
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(EdgeInsets.zero),
+                minimumSize: MaterialStateProperty.all(Size.zero),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return CreateMemoPage(item);
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Widget createCollapsedColumn(context) {
+    return Text('collapsed');
+  }
+
+  Widget createExpandedColumn(context) {
+    return Text('expanded');
   }
 }
