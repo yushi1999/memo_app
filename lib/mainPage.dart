@@ -138,7 +138,7 @@ class _MainPageState extends State<MainPage> {
           });
         },
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.symmetric(vertical: 6),
           child: Row(
             children: [
               Expanded(
