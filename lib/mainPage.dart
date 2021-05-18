@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:expandable/expandable.dart';
+import 'package:date_format/date_format.dart';
 import 'sharedParts.dart';
 import 'settingPage.dart';
 import 'createMemoPage.dart';
@@ -134,28 +135,113 @@ class _MainPageState extends State<MainPage> {
 
   //メモのカード一つ分の内容
   Widget memoCard(MemoItem item) {
-    var isExpanded = false;
-    return Card(
-      color: white,
-      elevation: 0.0,
-      key: Key(item.key),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 6),
-        child: Row(
+    return ExpandableNotifier(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+        child: ScrollOnExpand(
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            elevation: 0.0,
+            child: Builder(
+              builder: (context) {
+                var controller =
+                    ExpandableController.of(context, required: true);
+                return Container(
+                  child: TextButton(
+                    child: Expandable(
+                      collapsed: buildCollapsed(item),
+                      expanded: buildExpanded(item),
+                    ),
+                    onPressed: () {
+                      controller.toggle();
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildCollapsed(item) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(
+              item.getValue,
+              maxLines: 4,
+              style: TextStyle(
+                fontSize: 18,
+                color: black,
+              ),
+            ),
+          ),
+          TextButton(
+            child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Icon(
+                Icons.edit_sharp,
+                color: lightGrey,
+              ),
+            ),
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(EdgeInsets.zero),
+              minimumSize: MaterialStateProperty.all(Size.zero),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            onPressed: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return CreateMemoPage(item);
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildExpanded(item) {
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Text(
                 item.getValue,
-                maxLines: 4,
                 style: TextStyle(
                   fontSize: 18,
                   color: black,
                 ),
               ),
             ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              padding: EdgeInsets.only(right: 12),
+              child: Text(
+                formatDate(
+                  item.getCreatedDate,
+                  [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
+                ),
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
             TextButton(
               child: Padding(
-                padding: EdgeInsets.all(4),
+                padding: EdgeInsets.all(6),
                 child: Icon(
                   Icons.edit_sharp,
                   color: lightGrey,
@@ -178,15 +264,7 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         ),
-      ),
+      ],
     );
-  }
-
-  Widget createCollapsedColumn(context) {
-    return Text('collapsed');
-  }
-
-  Widget createExpandedColumn(context) {
-    return Text('expanded');
   }
 }

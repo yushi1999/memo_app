@@ -35,4 +35,5 @@ class MemoItem {
   });
 
   get getValue => value;
+  get getCreatedDate => createdDate;
 }
