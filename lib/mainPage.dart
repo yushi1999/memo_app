@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'mainPage.dart';
 import 'sharedParts.dart';
 import 'createMemoPage.dart';
 import 'widgets/reorderable_list_simple.dart';
@@ -43,7 +42,7 @@ class _MainPageState extends State<MainPage> {
   @override
   initState() {
     super.initState();
-    itemsList = [];
+    /*
     List memoList = [
       '洗剤を買い足すあああああああああああああああああああああああああああああ',
       '勉強メモ',
@@ -53,11 +52,15 @@ class _MainPageState extends State<MainPage> {
     for (int i = 0; i < memoList.length; i++) {
       final newItem = MemoItem(memoList[i], i.toString());
       itemsList.add(newItem);
-    }
+    }*/
   }
 
   @override
   Widget build(BuildContext context) {
+    final UserState userState = Provider.of<UserState>(context);
+    itemsList = userState.itemsList != null ? userState.itemsList : [];
+    userState.updateItemsList(itemsList);
+
     return Scaffold(
       backgroundColor: white,
       appBar: _appBar,

@@ -6,15 +6,32 @@ Color white = Colors.white;
 Color lightGrey = Colors.grey[300];
 Color lightOrange = Colors.orange[300];
 
-class UserState extends ChangeNotifier {}
+class UserState extends ChangeNotifier {
+  List<MemoItem> itemsList;
+
+  setItems(MemoItem item) {
+    itemsList.add(item);
+    notifyListeners();
+  }
+
+  updateItemsList(List<MemoItem> newList) {
+    itemsList = newList;
+    notifyListeners();
+  }
+}
 
 class MemoItem {
-  final String value;
-  final String key;
-  //DateTime createdDate, notificationDate;
-  //bool isFavorite;
-  //_MemoItem(value, createdDate, isFavorite);
-  MemoItem(this.value, this.key);
+  String value;
+  String key;
+  DateTime createdDate, notificationDate;
+  bool isFavorite;
+  MemoItem({
+    @required this.value,
+    @required this.isFavorite,
+    @required this.createdDate,
+    @required this.notificationDate,
+    @required this.key,
+  });
 
   get getValue => value;
 }

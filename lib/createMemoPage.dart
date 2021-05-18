@@ -17,60 +17,110 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
   final MemoItem memoItem;
   bool isMemoAlreadyCreated;
   String value;
-  DateTime createdDate, notificationDate;
+  DateTime notificationDate;
   bool isFavorite, isRemindValid;
 
   final globalKeyGetTextField = GlobalKey();
+  var _textController;
 
   @override
   initState() {
     super.initState();
-    if (memoItem == null)
+    if (memoItem == null) {
+      value = '';
       isMemoAlreadyCreated = false;
-    else
+      isFavorite = false;
+      isRemindValid = false;
+    } else {
       isMemoAlreadyCreated = true;
-    isFavorite = false;
-    isRemindValid = false;
+      value = memoItem.getValue;
+      notificationDate = memoItem.notificationDate;
+      isFavorite = memoItem.isFavorite;
+      if (notificationDate == null)
+        isRemindValid = false;
+      else
+        isRemindValid = true;
+    }
+    _textController = TextEditingController(text: value);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: white,
-      appBar: AppBar(
+    final UserState userState = Provider.of<UserState>(context);
+
+    //メモを保存
+    Future<bool> _willPopCallback() async {
+      //新規作成時
+      if (!isMemoAlreadyCreated) {
+        //テキストが打ち込まれている場合のみ保存
+        if (_textController.text.length > 0) {
+          var now = DateTime.now();
+          var newItem = MemoItem(
+            value: _textController.text,
+            isFavorite: isFavorite,
+            createdDate: now,
+            notificationDate: isRemindValid ? notificationDate : null,
+            key: now.toString(),
+          );
+          userState.setItems(newItem);
+        }
+      }
+      //編集時
+      else {
+        print('');
+      }
+      Navigator.of(context).pop();
+      return true;
+    }
+
+    return WillPopScope(
+      child: Scaffold(
         backgroundColor: white,
-        elevation: 0.0,
-        title: Text(
-          isMemoAlreadyCreated ? 'メモを編集' : '新規作成',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        appBar: AppBar(
+          backgroundColor: white,
+          elevation: 0.0,
+          title: Text(
+            isMemoAlreadyCreated ? 'メモを編集' : '新規作成',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: 24,
+            ),
+            onPressed: () async {
+              await _willPopCallback();
+            },
+          ),
+          actions: [
+            favoriteButton(),
+            remindButton(),
+          ],
         ),
-        actions: [
-          favoriteButton(),
-          remindButton(),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-            child: Column(
-              children: [
-                if (isRemindValid)
-                  Text(
-                    'リマインド  ' +
-                        formatDate(
-                          notificationDate,
-                          [mm, '/', dd, ' ', HH, ':', nn, ''],
-                        ),
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                //罫線付き入力フォーム
-                ruledLineInput(),
-              ],
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+              child: Column(
+                children: [
+                  if (isRemindValid)
+                    Text(
+                      'リマインド  ' +
+                          formatDate(
+                            notificationDate,
+                            [mm, '/', dd, ' ', HH, ':', nn, ''],
+                          ),
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  //罫線付き入力フォーム
+                  ruledLineInput(),
+                ],
+              ),
             ),
           ),
         ),
       ),
+      onWillPop: _willPopCallback,
     );
   }
 
@@ -133,6 +183,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
           painter: TextUnderLinePainter(globalKeyGetTextField, 150),
         ),
         TextField(
+          controller: _textController,
           style: TextStyle(fontSize: 20),
           key: globalKeyGetTextField,
           keyboardType: TextInputType.multiline,
@@ -140,11 +191,12 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
           decoration: const InputDecoration(
             border: InputBorder.none,
           ),
+          /*
           onChanged: (String text) {
             setState(() {
               value = text;
             });
-          },
+          },*/
         ),
       ],
     );
