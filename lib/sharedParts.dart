@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 Color white = Colors.white;
 Color lightGrey = Colors.grey[300];
+Color lightOrange = Colors.orange[300];
 
 class UserState extends ChangeNotifier {}
 

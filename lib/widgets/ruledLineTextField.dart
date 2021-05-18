@@ -15,6 +15,7 @@ class RuledLineTextField extends StatelessWidget {
             painter: TextUnderLinePainter(globalKeyGetTextField, 150),
           ),
           TextField(
+            maxLength: 2500,
             key: globalKeyGetTextField,
             keyboardType: TextInputType.multiline,
             maxLines: 150,
@@ -39,7 +40,7 @@ class TextUnderLinePainter extends CustomPainter {
 
     final ruledLineWidth = textFieldRenderBox.size.width;
     //TextFieldの高さをmaxLinesの値で割ることで段落１行分の高さを求めている
-    final ruledLineSpace = textFieldRenderBox.size.height / maxLines;
+    final ruledLineSpace = textFieldRenderBox.size.height / maxLines - 0.15;
     //テキストフィールドにはデフォルトで上部分に12のパディングがつくため(InputDecoration)、
     //最初の罫線の位置もこれに合わせる必要がある。
     const ruledLineContentPadding = 12;
