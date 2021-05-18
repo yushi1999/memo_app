@@ -126,45 +126,56 @@ class _MainPageState extends State<MainPage> {
 
   //メモのカード一つ分の内容
   Widget memoCard(MemoItem item) {
+    bool tapped = false;
     return Card(
       color: white,
       elevation: 0.0,
       key: Key(item.key),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                item.getValue,
-                maxLines: 4,
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-            TextButton(
-              child: Padding(
-                padding: EdgeInsets.all(4),
-                child: Icon(
-                  Icons.edit_sharp,
-                  color: lightGrey,
+      child: TextButton(
+        onPressed: () {
+          setState(() {
+            tapped = !tapped;
+          });
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  item.getValue,
+                  maxLines: tapped ? 150 : 4,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: black,
+                  ),
                 ),
               ),
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(EdgeInsets.zero),
-                minimumSize: MaterialStateProperty.all(Size.zero),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              onPressed: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return CreateMemoPage(item);
-                    },
+              TextButton(
+                child: Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Icon(
+                    Icons.edit_sharp,
+                    color: lightGrey,
                   ),
-                );
-              },
-            ),
-          ],
+                ),
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                  minimumSize: MaterialStateProperty.all(Size.zero),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return CreateMemoPage(item);
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

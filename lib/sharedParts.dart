@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 Color white = Colors.white;
+Color black = Colors.black;
 Color lightGrey = Colors.grey[300];
 Color lightOrange = Colors.orange[300];
 
