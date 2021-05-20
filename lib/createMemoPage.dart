@@ -60,7 +60,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
             isFavorite: isFavorite,
             createdDate: now,
             notificationDate: isRemindValid ? notificationDate : null,
-            key: now.toString(),
+            key: now.toString() + isFavorite.toString(),
           );
           userState.setItems(newItem);
         }

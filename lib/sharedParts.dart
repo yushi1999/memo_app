@@ -41,4 +41,5 @@ class MemoItem {
   get getValue => value;
   get getCreatedDate => createdDate;
   get getIsFavorite => isFavorite;
+  get getKey => key;
 }

@@ -118,6 +118,7 @@ class _MainPageState extends State<MainPage> {
             },
             children: itemsList.map((MemoItem item) {
               return Slidable(
+                key: Key(item.getKey),
                 actionExtentRatio: 0.3,
                 actionPane: SlidableDrawerActionPane(),
                 secondaryActions: [
@@ -142,7 +143,7 @@ class _MainPageState extends State<MainPage> {
     return ExpandableNotifier(
       child: Padding(
         padding: const EdgeInsets.only(
-          right: 2,
+          right: 4,
         ),
         child: ScrollOnExpand(
           child: Card(

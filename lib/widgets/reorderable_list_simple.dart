@@ -46,18 +46,17 @@ class _ReorderableListSimpleState extends State<ReorderableListSimple> {
   }
 
   int _oldIndexOfKey(Key key) {
-    return widget.children
-        .indexWhere((Widget w) => Key(w.hashCode.toString()) == key);
+    return widget.children.indexWhere((Widget w) => w.key == key);
   }
 
   int _indexOfKey(Key key) {
-    return _children
-        .indexWhere((Widget w) => Key(w.hashCode.toString()) == key);
+    return _children.indexWhere((Widget w) => w.key == key);
   }
 
   Widget _buildReorderableItem(BuildContext context, int index) {
     return ReorderableItemSimple(
-      key: Key(_children[index].hashCode.toString()),
+      //key: Key(_children[index].hashCode.toString()),
+      key: _children[index].key,
       index: index,
       innerItem: _children[index],
       allowReordering: widget.allowReordering,
@@ -191,8 +190,11 @@ class ReorderableItemSimple extends StatelessWidget {
   BoxDecoration _decoration(
       BuildContext context, rol.ReorderableItemState state, bool isFavorite) {
     bool placeholder = state == rol.ReorderableItemState.placeholder;
-
-    return BoxDecoration(color: Colors.transparent);
+    if (!placeholder)
+      return BoxDecoration(
+          color: key.toString().contains('true') ? lightOrange : white);
+    else
+      return BoxDecoration(color: white);
     //return BoxDecoration(color: isFavorite ? lightOrange : white);
     /*
     //タップしてドラッグ中～ドラッグ終了まで
@@ -225,7 +227,6 @@ class ReorderableItemSimple extends StatelessWidget {
       isFavorite = true;
     else
       isFavorite = false;
-    print(index);
     return rol.ReorderableItem(
       key: key,
       childBuilder: (BuildContext context, rol.ReorderableItemState state) {
