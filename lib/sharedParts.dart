@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 
 Color white = Colors.white;
 Color black = Colors.black;
+Color red = Colors.red;
+Color blue = Colors.blue;
+Color yellow = Colors.yellow;
+Color pink = Colors.pink;
 Color lightGrey = Colors.grey[300];
 Color lightOrange = Colors.orange[300];
 
@@ -36,4 +40,5 @@ class MemoItem {
 
   get getValue => value;
   get getCreatedDate => createdDate;
+  get getIsFavorite => isFavorite;
 }

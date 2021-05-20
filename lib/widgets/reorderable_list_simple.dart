@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as rol;
+import '../sharedParts.dart';
 
 enum ReorderableListSimpleSide { Right, Left }
 
@@ -56,6 +58,7 @@ class _ReorderableListSimpleState extends State<ReorderableListSimple> {
   Widget _buildReorderableItem(BuildContext context, int index) {
     return ReorderableItemSimple(
       key: Key(_children[index].hashCode.toString()),
+      index: index,
       innerItem: _children[index],
       allowReordering: widget.allowReordering,
       childrenAlreadyHaveListener: widget.childrenAlreadyHaveListener,
@@ -122,6 +125,7 @@ class ReorderableItemSimple extends StatelessWidget {
     this.childrenAlreadyHaveListener = false,
     this.handleSide = ReorderableListSimpleSide.Right,
     this.handleIcon,
+    this.index,
   }) : super(key: key);
 
   final bool allowReordering;
@@ -129,6 +133,7 @@ class ReorderableItemSimple extends StatelessWidget {
   final ReorderableListSimpleSide handleSide;
   final Icon handleIcon;
   final Widget innerItem;
+  final int index;
 
   Color _iconColor(ThemeData theme, ListTileTheme tileTheme) {
     if (tileTheme?.selectedColor != null) return tileTheme.selectedColor;
@@ -184,30 +189,47 @@ class ReorderableItemSimple extends StatelessWidget {
   }
 
   BoxDecoration _decoration(
-      BuildContext context, rol.ReorderableItemState state) {
+      BuildContext context, rol.ReorderableItemState state, bool isFavorite) {
+    bool placeholder = state == rol.ReorderableItemState.placeholder;
+
+    return BoxDecoration(color: Colors.transparent);
+    //return BoxDecoration(color: isFavorite ? lightOrange : white);
+    /*
+    //タップしてドラッグ中～ドラッグ終了まで
     if (state == rol.ReorderableItemState.dragProxy ||
         state == rol.ReorderableItemState.dragProxyFinished) {
-      return BoxDecoration(color: Color(0xD0FFFFFF));
+      return BoxDecoration(
+        color: white,
+      );
     } else {
       bool placeholder = state == rol.ReorderableItemState.placeholder;
       return BoxDecoration(
-          border: Border(
-              top: !placeholder
-                  ? Divider.createBorderSide(context)
-                  : BorderSide.none,
-              bottom: placeholder
-                  ? BorderSide.none
-                  : Divider.createBorderSide(context)),
-          color: placeholder ? null : Colors.white);
-    }
+        border: Border(
+            top: !placeholder
+                ? Divider.createBorderSide(context)
+                : BorderSide.none,
+            bottom: placeholder
+                ? BorderSide.none
+                : Divider.createBorderSide(context)),
+        color: placeholder ? null : (isFavorite ? lightOrange : white),
+      );
+    }*/
   }
 
   @override
   Widget build(BuildContext context) {
+    final UserState userState = Provider.of<UserState>(context);
+    List<MemoItem> itemsList = userState.itemsList;
+    bool isFavorite;
+    if (itemsList[index].getIsFavorite)
+      isFavorite = true;
+    else
+      isFavorite = false;
+    print(index);
     return rol.ReorderableItem(
       key: key,
       childBuilder: (BuildContext context, rol.ReorderableItemState state) {
-        BoxDecoration decoration = _decoration(context, state);
+        BoxDecoration decoration = _decoration(context, state, isFavorite);
         return Container(
           decoration: decoration,
           child: Opacity(

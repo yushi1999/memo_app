@@ -7,7 +7,6 @@ import 'sharedParts.dart';
 import 'settingPage.dart';
 import 'createMemoPage.dart';
 import 'widgets/reorderable_list_simple.dart';
-import 'widgets/customExpansionTile.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);
@@ -122,7 +121,12 @@ class _MainPageState extends State<MainPage> {
                 actionExtentRatio: 0.3,
                 actionPane: SlidableDrawerActionPane(),
                 secondaryActions: [
-                  _deleteMemoAction,
+                  IconSlideAction(
+                    icon: Icons.delete,
+                    caption: '削除',
+                    color: Colors.red[400],
+                    onTap: () {},
+                  )
                 ],
                 child: memoCard(item),
               );
@@ -137,9 +141,12 @@ class _MainPageState extends State<MainPage> {
   Widget memoCard(MemoItem item) {
     return ExpandableNotifier(
       child: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+        padding: const EdgeInsets.only(
+          right: 2,
+        ),
         child: ScrollOnExpand(
           child: Card(
+            color: item.getIsFavorite ? lightOrange : white,
             clipBehavior: Clip.antiAlias,
             elevation: 0.0,
             child: Builder(
@@ -165,6 +172,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  //デフォルトのメモの表示内容
   Widget buildCollapsed(item) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 0),
@@ -175,6 +183,7 @@ class _MainPageState extends State<MainPage> {
             child: Text(
               item.getValue,
               maxLines: 4,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 18,
                 color: black,
@@ -186,7 +195,7 @@ class _MainPageState extends State<MainPage> {
               padding: EdgeInsets.all(4),
               child: Icon(
                 Icons.edit_sharp,
-                color: lightGrey,
+                color: item.getIsFavorite ? white : lightGrey,
               ),
             ),
             style: ButtonStyle(
@@ -209,8 +218,10 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  //タップした後のメモの表示内容
   Widget buildExpanded(item) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -226,6 +237,7 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         ),
+        //日付と編集ボタン
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -241,10 +253,10 @@ class _MainPageState extends State<MainPage> {
             ),
             TextButton(
               child: Padding(
-                padding: EdgeInsets.all(6),
+                padding: EdgeInsets.all(10),
                 child: Icon(
                   Icons.edit_sharp,
-                  color: lightGrey,
+                  color: item.getIsFavorite ? white : lightGrey,
                 ),
               ),
               style: ButtonStyle(
