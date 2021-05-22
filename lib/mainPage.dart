@@ -117,6 +117,17 @@ class _MainPageState extends State<MainPage> {
               });
             },
             children: itemsList.map((MemoItem item) {
+              Key itemKey = Key(item.getKey);
+              var color, subColor = white;
+              if (itemKey.toString().contains('favorite')) {
+                color = lightOrange;
+              } else if (itemKey.toString().contains('remind')) {
+                color = lightBlue;
+              } else {
+                color = white;
+                subColor = lightGrey;
+              }
+
               return Slidable(
                 key: Key(item.getKey),
                 actionExtentRatio: 0.3,
@@ -129,7 +140,7 @@ class _MainPageState extends State<MainPage> {
                     onTap: () {},
                   )
                 ],
-                child: memoCard(item),
+                child: memoCard(item, color, subColor),
               );
             }).toList(),
           ),
@@ -139,15 +150,15 @@ class _MainPageState extends State<MainPage> {
   }
 
   //メモのカード一つ分の内容
-  Widget memoCard(MemoItem item) {
+  Widget memoCard(MemoItem item, color, subColor) {
     return ExpandableNotifier(
       child: Padding(
         padding: const EdgeInsets.only(
-          right: 4,
+          right: 0,
         ),
         child: ScrollOnExpand(
           child: Card(
-            color: item.getIsFavorite ? lightOrange : white,
+            color: color,
             clipBehavior: Clip.antiAlias,
             elevation: 0.0,
             child: Builder(
@@ -157,8 +168,8 @@ class _MainPageState extends State<MainPage> {
                 return Container(
                   child: TextButton(
                     child: Expandable(
-                      collapsed: buildCollapsed(item),
-                      expanded: buildExpanded(item),
+                      collapsed: buildCollapsed(item, subColor),
+                      expanded: buildExpanded(item, subColor),
                     ),
                     onPressed: () {
                       controller.toggle();
@@ -174,53 +185,76 @@ class _MainPageState extends State<MainPage> {
   }
 
   //デフォルトのメモの表示内容
-  Widget buildCollapsed(item) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Text(
-              item.getValue,
-              maxLines: 4,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 18,
-                color: black,
-              ),
-            ),
-          ),
-          TextButton(
-            child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Icon(
-                Icons.edit_sharp,
-                color: item.getIsFavorite ? white : lightGrey,
-              ),
-            ),
-            style: ButtonStyle(
-              padding: MaterialStateProperty.all(EdgeInsets.zero),
-              minimumSize: MaterialStateProperty.all(Size.zero),
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            onPressed: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return CreateMemoPage(item);
-                  },
+  Widget buildCollapsed(item, subColor) {
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(left: 3),
+                child: Text(
+                  item.getValue,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: black,
+                  ),
                 ),
-              );
-            },
+              ),
+            ),
+            TextButton(
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Icon(
+                  Icons.edit_sharp,
+                  color: subColor,
+                ),
+              ),
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(EdgeInsets.zero),
+                minimumSize: MaterialStateProperty.all(Size.zero),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return CreateMemoPage(item);
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        if (item.getNotificationDate != null)
+          Row(
+            children: [
+              Icon(
+                Icons.notifications,
+                color: lightYellow,
+              ),
+              Text(
+                formatDate(
+                  item.getNotificationDate,
+                  [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
+                ),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: lightYellow,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+      ],
     );
   }
 
   //タップした後のメモの表示内容
-  Widget buildExpanded(item) {
+  Widget buildExpanded(item, subColor) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -228,11 +262,14 @@ class _MainPageState extends State<MainPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: Text(
-                item.getValue,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: black,
+              child: Container(
+                padding: EdgeInsets.only(left: 3),
+                child: Text(
+                  item.getValue,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: black,
+                  ),
                 ),
               ),
             ),
@@ -249,7 +286,10 @@ class _MainPageState extends State<MainPage> {
                   item.getCreatedDate,
                   [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
                 ),
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: subColor,
+                ),
               ),
             ),
             TextButton(
@@ -257,7 +297,7 @@ class _MainPageState extends State<MainPage> {
                 padding: EdgeInsets.all(10),
                 child: Icon(
                   Icons.edit_sharp,
-                  color: item.getIsFavorite ? white : lightGrey,
+                  color: subColor,
                 ),
               ),
               style: ButtonStyle(

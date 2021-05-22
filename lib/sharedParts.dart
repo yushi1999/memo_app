@@ -8,6 +8,8 @@ Color red = Colors.red;
 Color blue = Colors.blue;
 Color yellow = Colors.yellow;
 Color pink = Colors.pink;
+Color lightBlue = Colors.blue[200];
+Color lightYellow = Colors.yellow[300];
 Color lightGrey = Colors.grey[300];
 Color lightOrange = Colors.orange[300];
 
@@ -40,6 +42,7 @@ class MemoItem {
 
   get getValue => value;
   get getCreatedDate => createdDate;
+  get getNotificationDate => notificationDate;
   get getIsFavorite => isFavorite;
   get getKey => key;
 }

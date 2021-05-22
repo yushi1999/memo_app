@@ -190,11 +190,18 @@ class ReorderableItemSimple extends StatelessWidget {
   BoxDecoration _decoration(
       BuildContext context, rol.ReorderableItemState state, bool isFavorite) {
     bool placeholder = state == rol.ReorderableItemState.placeholder;
-    if (!placeholder)
-      return BoxDecoration(
-          color: key.toString().contains('true') ? lightOrange : white);
-    else
+    var color;
+    if (!placeholder) {
+      if (key.toString().contains('favorite'))
+        color = lightOrange;
+      else if (key.toString().contains('remind'))
+        color = lightBlue;
+      else
+        color = white;
+      return BoxDecoration(color: color);
+    } else {
       return BoxDecoration(color: white);
+    }
     //return BoxDecoration(color: isFavorite ? lightOrange : white);
     /*
     //タップしてドラッグ中～ドラッグ終了まで

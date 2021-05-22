@@ -55,12 +55,20 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
         //テキストが打ち込まれている場合のみ保存
         if (_textController.text.length > 0) {
           var now = DateTime.now();
+          var keyWord;
+          if (isFavorite) {
+            keyWord = 'favorite';
+          } else if (isRemindValid) {
+            keyWord = 'remind';
+          } else {
+            keyWord = 'normal';
+          }
           var newItem = MemoItem(
             value: _textController.text,
             isFavorite: isFavorite,
             createdDate: now,
             notificationDate: isRemindValid ? notificationDate : null,
-            key: now.toString() + isFavorite.toString(),
+            key: now.toString() + keyWord,
           );
           userState.setItems(newItem);
         }
