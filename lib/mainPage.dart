@@ -72,7 +72,7 @@ class _MainPageState extends State<MainPage> {
             await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) {
-                  return CreateMemoPage(null);
+                  return CreateMemoPage(null, -1);
                 },
               ),
             );
@@ -99,38 +99,48 @@ class _MainPageState extends State<MainPage> {
                       userState.updateItemsList(itemsList);
                     });
                   },
-                  children: itemsList.map((MemoItem item) {
-                    Key itemKey = Key(item.getKey);
-                    //カードの色と日付・アイコンの色
-                    var color, subColor = white;
-                    if (itemKey.toString().contains('favorite')) {
-                      color = lightOrange;
-                    } else if (itemKey.toString().contains('remind')) {
-                      color = lightBlue;
-                    } else {
-                      color = white;
-                      subColor = lightGrey;
-                    }
-                    return Slidable(
-                      key: Key(item.getKey),
-                      actionExtentRatio: 0.3,
-                      actionPane: SlidableDrawerActionPane(),
-                      secondaryActions: [
-                        IconSlideAction(
-                          icon: Icons.delete,
-                          caption: '削除',
-                          color: Colors.red[400],
-                          onTap: () async {
-                            await Future.delayed(Duration(milliseconds: 300),
-                                () => itemsList.remove(item));
-                            userState.updateItemsList(itemsList);
-                            setState(() {});
-                          },
-                        )
-                      ],
-                      child: memoCard(item, color, subColor),
-                    );
-                  }).toList(),
+                  children: itemsList
+                      .asMap()
+                      .map(
+                        (int index, MemoItem item) {
+                          Key itemKey = Key(item.getKey);
+                          //カードの色と日付・アイコンの色
+                          var color, subColor = white;
+                          if (itemKey.toString().contains('favorite')) {
+                            color = lightOrange;
+                          } else if (itemKey.toString().contains('remind')) {
+                            color = lightBlue;
+                          } else {
+                            color = white;
+                            subColor = lightGrey;
+                          }
+                          return MapEntry(
+                            index,
+                            Slidable(
+                              key: Key(item.getKey),
+                              actionExtentRatio: 0.3,
+                              actionPane: SlidableDrawerActionPane(),
+                              secondaryActions: [
+                                IconSlideAction(
+                                  icon: Icons.delete,
+                                  caption: '削除',
+                                  color: Colors.red[400],
+                                  onTap: () async {
+                                    await Future.delayed(
+                                        Duration(milliseconds: 300),
+                                        () => itemsList.remove(item));
+                                    userState.updateItemsList(itemsList);
+                                    setState(() {});
+                                  },
+                                )
+                              ],
+                              child: memoCard(item, color, subColor, index),
+                            ),
+                          );
+                        },
+                      )
+                      .values
+                      .toList(),
                 )
               : Container(),
         ),
@@ -139,7 +149,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   //メモのカード一つ分の内容
-  Widget memoCard(MemoItem item, color, subColor) {
+  Widget memoCard(MemoItem item, color, subColor, index) {
     return ExpandableNotifier(
       child: Padding(
         padding: const EdgeInsets.only(
@@ -157,8 +167,8 @@ class _MainPageState extends State<MainPage> {
                 return Container(
                   child: TextButton(
                     child: Expandable(
-                      collapsed: buildCollapsed(item, subColor),
-                      expanded: buildExpanded(item, subColor),
+                      collapsed: buildCollapsed(item, subColor, index),
+                      expanded: buildExpanded(item, subColor, index),
                     ),
                     onPressed: () {
                       controller.toggle();
@@ -174,7 +184,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   //デフォルトのメモの表示内容
-  Widget buildCollapsed(item, subColor) {
+  Widget buildCollapsed(item, subColor, index) {
     return Column(
       children: [
         Row(
@@ -212,7 +222,7 @@ class _MainPageState extends State<MainPage> {
                 await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
-                      return CreateMemoPage(item);
+                      return CreateMemoPage(item, index);
                     },
                   ),
                 );
@@ -248,7 +258,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   //タップした後のメモの表示内容
-  Widget buildExpanded(item, subColor) {
+  Widget buildExpanded(item, subColor, index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -329,7 +339,7 @@ class _MainPageState extends State<MainPage> {
                 await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
-                      return CreateMemoPage(item);
+                      return CreateMemoPage(item, index);
                     },
                   ),
                 );

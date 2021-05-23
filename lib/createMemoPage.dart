@@ -8,15 +8,18 @@ import 'sharedParts.dart';
 import 'widgets/ruledLineTextField.dart';
 
 class CreateMemoPage extends StatefulWidget {
-  CreateMemoPage(this.memoItem);
+  CreateMemoPage(this.memoItem, this.index);
   final MemoItem memoItem;
+  final int index;
   @override
-  _CreateMemoPageState createState() => new _CreateMemoPageState(memoItem);
+  _CreateMemoPageState createState() =>
+      new _CreateMemoPageState(memoItem, index);
 }
 
 class _CreateMemoPageState extends State<CreateMemoPage> {
-  _CreateMemoPageState(this.memoItem);
+  _CreateMemoPageState(this.memoItem, this.index);
   final MemoItem memoItem;
+  final int index;
   bool isMemoAlreadyCreated;
   String value;
   DateTime notificationDate;
@@ -79,9 +82,13 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
       //編集時
       else {
         //テキスト、お気に入り、通知のデータに変化がある時
-        if (newItem.value != _textController.text ||
-            newItem.isFavorite != isFavorite ||
-            newItem.notificationDate != notificationDate) {}
+        if (newItem.value != memoItem.getValue ||
+            newItem.isFavorite != memoItem.isFavorite ||
+            newItem.notificationDate != memoItem.notificationDate) {
+          List<MemoItem> itemsList = userState.itemsList;
+          itemsList[index] = newItem;
+          userState.updateItemsList(itemsList);
+        }
       }
       Navigator.of(context).pop();
       return true;
