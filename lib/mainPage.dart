@@ -167,9 +167,17 @@ class _MainPageState extends State<MainPage> {
                               actionPane: SlidableDrawerActionPane(),
                               secondaryActions: [
                                 IconSlideAction(
-                                  icon: Icons.delete,
+                                  iconWidget: Container(
+                                    padding: EdgeInsets.only(bottom: 8),
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: backgroundColor,
+                                      size: 30,
+                                    ),
+                                  ),
                                   caption: '削除',
-                                  color: Colors.red[400],
+                                  foregroundColor: backgroundColor,
+                                  color: secondaryColor,
                                   onTap: () async {
                                     await Future.delayed(
                                         Duration(milliseconds: 300),
@@ -292,7 +300,7 @@ class _MainPageState extends State<MainPage> {
             child: Icon(
               Icons.edit_sharp,
               color: penColor,
-              size: 28,
+              size: 26,
             ),
           ),
           style: ButtonStyle(
@@ -393,7 +401,7 @@ class _MainPageState extends State<MainPage> {
                 child: Icon(
                   Icons.edit_sharp,
                   color: penColor,
-                  size: 28,
+                  size: 26,
                 ),
               ),
               style: ButtonStyle(

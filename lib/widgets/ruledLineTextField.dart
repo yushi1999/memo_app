@@ -4,15 +4,16 @@ import '../sharedParts.dart';
 //int maxLines = 300;
 
 class RuledLineTextField extends StatelessWidget {
-  RuledLineTextField(this.globalKeyGetTextField);
+  RuledLineTextField(this.globalKeyGetTextField, this.color);
   final GlobalKey globalKeyGetTextField;
+  final Color color;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Stack(
         children: <Widget>[
           CustomPaint(
-            painter: TextUnderLinePainter(globalKeyGetTextField, 150),
+            painter: TextUnderLinePainter(globalKeyGetTextField, 150, color),
           ),
           TextField(
             maxLength: 2500,
@@ -28,9 +29,10 @@ class RuledLineTextField extends StatelessWidget {
 }
 
 class TextUnderLinePainter extends CustomPainter {
-  TextUnderLinePainter(this.globalKeyGetTextField, this.maxLines);
+  TextUnderLinePainter(this.globalKeyGetTextField, this.maxLines, this.color);
   final GlobalKey globalKeyGetTextField;
   final int maxLines;
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -47,7 +49,7 @@ class TextUnderLinePainter extends CustomPainter {
 
     //maxLines行分の線を引く
     final paint = Paint()
-      ..color = lightGrey
+      ..color = color
       ..strokeWidth = 1;
     for (var i = 1; i <= maxLines; i++) {
       canvas.drawLine(

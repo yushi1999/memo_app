@@ -144,7 +144,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
                       style: TextStyle(color: Colors.grey),
                     ),
                   //罫線付き入力フォーム
-                  ruledLineInput(textColor),
+                  ruledLineInput(textColor, secondaryColor),
                 ],
               ),
             ),
@@ -207,11 +207,12 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
   }
 
   //罫線付き入力フォーム
-  Widget ruledLineInput(textColor) {
+  Widget ruledLineInput(textColor, secondaryColor) {
     return Stack(
       children: <Widget>[
         CustomPaint(
-          painter: TextUnderLinePainter(globalKeyGetTextField, 150),
+          painter:
+              TextUnderLinePainter(globalKeyGetTextField, 150, secondaryColor),
         ),
         TextField(
           controller: _textController,

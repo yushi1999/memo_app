@@ -24,7 +24,8 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
     var rand = new math.Random();
-    int colorIndex = rand.nextInt(colorCombinations.length);
+    //int colorIndex = rand.nextInt(colorCombinations.length);
+    int colorIndex = 6;
     userState.setColorsList(
         colorCombinations[colorIndex][0],
         colorCombinations[colorIndex][1],
