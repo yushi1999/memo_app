@@ -195,7 +195,7 @@ class _MainPageState extends State<MainPage> {
                 padding: EdgeInsets.only(left: 3),
                 child: Text(
                   item.getValue,
-                  maxLines: 4,
+                  maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 18,
