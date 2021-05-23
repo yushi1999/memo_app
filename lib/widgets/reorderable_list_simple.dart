@@ -55,7 +55,6 @@ class _ReorderableListSimpleState extends State<ReorderableListSimple> {
 
   Widget _buildReorderableItem(BuildContext context, int index) {
     return ReorderableItemSimple(
-      //key: Key(_children[index].hashCode.toString()),
       key: _children[index].key,
       index: index,
       innerItem: _children[index],
@@ -170,19 +169,21 @@ class ReorderableItemSimple extends StatelessWidget {
   }
 
   BoxDecoration _decoration(
-      BuildContext context, rol.ReorderableItemState state, bool isFavorite) {
+      BuildContext context,
+      rol.ReorderableItemState state,
+      bool isFavorite,
+      highlightColor,
+      backgroundColor) {
     bool placeholder = state == rol.ReorderableItemState.placeholder;
     var color;
     if (!placeholder) {
       if (key.toString().contains('favorite'))
-        color = lightOrange;
-      else if (key.toString().contains('remind'))
-        color = lightBlue;
+        color = highlightColor;
       else
-        color = white;
+        color = backgroundColor;
       return BoxDecoration(color: color);
     } else {
-      return BoxDecoration(color: white);
+      return BoxDecoration(color: backgroundColor);
     }
     //return BoxDecoration(color: isFavorite ? lightOrange : white);
     /*
@@ -211,6 +212,10 @@ class ReorderableItemSimple extends StatelessWidget {
   Widget build(BuildContext context) {
     final UserState userState = Provider.of<UserState>(context);
     List<MemoItem> itemsList = userState.itemsList;
+    Color highlightColor = userState.colorsList[0];
+    Color secondaryColor = userState.colorsList[1];
+    Color backgroundColor = userState.colorsList[2];
+    Color textColor = userState.colorsList[3];
     bool isFavorite;
     if (itemsList[index].getIsFavorite)
       isFavorite = true;
@@ -219,7 +224,8 @@ class ReorderableItemSimple extends StatelessWidget {
     return rol.ReorderableItem(
       key: key,
       childBuilder: (BuildContext context, rol.ReorderableItemState state) {
-        BoxDecoration decoration = _decoration(context, state, isFavorite);
+        BoxDecoration decoration = _decoration(
+            context, state, isFavorite, highlightColor, backgroundColor);
         return Container(
           decoration: decoration,
           child: Opacity(

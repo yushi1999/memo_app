@@ -18,10 +18,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   final UserState userState = UserState();
+  Color highlightColor = Color(0xff7EC2C2);
+  Color secondaryColor = Color(0xffe67a7a);
+  Color backgroundColor = Color(0xfffff4e1);
+  Color textColor = Colors.blueGrey; //Color(0xffB8B1AB);
 
   @override
   initState() {
     super.initState();
+    userState.setColorsList(
+        highlightColor, secondaryColor, backgroundColor, textColor);
     syncDataWithSharedPreferences();
   }
 

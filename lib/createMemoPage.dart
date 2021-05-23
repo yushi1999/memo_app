@@ -52,6 +52,10 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
   @override
   Widget build(BuildContext context) {
     final UserState userState = Provider.of<UserState>(context);
+    Color highlightColor = userState.colorsList[0];
+    Color secondaryColor = userState.colorsList[1];
+    Color backgroundColor = userState.colorsList[2];
+    Color textColor = userState.colorsList[3];
 
     //メモをUserStateに保存
     Future<bool> _willPopCallback() async {
@@ -96,26 +100,31 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
 
     return WillPopScope(
       child: Scaffold(
-        backgroundColor: white,
+        backgroundColor: backgroundColor,
         appBar: AppBar(
-          backgroundColor: white,
+          backgroundColor: backgroundColor,
           elevation: 0.0,
           title: Text(
             isMemoAlreadyCreated ? 'メモを編集' : '新規作成',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: textColor,
+            ),
           ),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios,
               size: 24,
+              color: textColor,
             ),
             onPressed: () async {
               await _willPopCallback();
             },
           ),
           actions: [
-            favoriteButton(),
-            remindButton(),
+            favoriteButton(highlightColor),
+            remindButton(secondaryColor),
           ],
         ),
         body: SafeArea(
@@ -134,7 +143,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
                       style: TextStyle(color: Colors.grey),
                     ),
                   //罫線付き入力フォーム
-                  ruledLineInput(),
+                  ruledLineInput(textColor),
                 ],
               ),
             ),
@@ -146,11 +155,11 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
   }
 
   //お気に入りボタン
-  Widget favoriteButton() {
+  Widget favoriteButton(Color highlightColor) {
     return IconButton(
       icon: Icon(
         isFavorite ? Icons.favorite : Icons.favorite_border,
-        color: lightOrange,
+        color: highlightColor,
         size: 32,
       ),
       onPressed: () {
@@ -162,11 +171,11 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
   }
 
   //通知ボタン
-  Widget remindButton() {
+  Widget remindButton(Color secondaryColor) {
     return IconButton(
       icon: Icon(
         isRemindValid ? Icons.notifications : Icons.notifications_outlined,
-        color: lightOrange,
+        color: secondaryColor,
         size: 32,
       ),
       onPressed: () async {
@@ -197,7 +206,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
   }
 
   //罫線付き入力フォーム
-  Widget ruledLineInput() {
+  Widget ruledLineInput(textColor) {
     return Stack(
       children: <Widget>[
         CustomPaint(
@@ -205,7 +214,10 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
         ),
         TextField(
           controller: _textController,
-          style: TextStyle(fontSize: 20),
+          style: TextStyle(
+            fontSize: 20,
+            color: textColor,
+          ),
           key: globalKeyGetTextField,
           keyboardType: TextInputType.multiline,
           maxLines: 150,

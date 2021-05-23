@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,19 +29,47 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final UserState userState = Provider.of<UserState>(context);
+    Color highlightColor = userState.colorsList[0];
+    Color secondaryColor = userState.colorsList[1];
+    Color backgroundColor = userState.colorsList[2];
+    Color textColor = userState.colorsList[3];
     itemsList = userState.itemsList;
     return Scaffold(
-      backgroundColor: white,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: white,
+        backgroundColor: backgroundColor,
         elevation: 0.0,
         title: Text(
           "Simple Memo Pad",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: textColor,
+          ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: Icon(
+              Icons.rotate_left,
+              color: textColor,
+            ),
+            onPressed: () {
+              var rand = new math.Random();
+              int index = rand.nextInt(colorCombinations.length);
+              userState.setColorsList(
+                  colorCombinations[index][0],
+                  colorCombinations[index][1],
+                  colorCombinations[index][2],
+                  colorCombinations[index][3]);
+              print(index);
+              setState(() {});
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: textColor,
+            ),
             onPressed: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(
@@ -56,14 +85,15 @@ class _MainPageState extends State<MainPage> {
       floatingActionButton: Container(
         margin: EdgeInsets.only(bottom: 60),
         child: FloatingActionButton.extended(
+          foregroundColor: highlightColor,
           icon: Icon(
             Icons.add,
-            color: white,
+            color: backgroundColor,
           ),
           label: Text(
             '作成',
             style: TextStyle(
-              color: white,
+              color: backgroundColor,
               fontWeight: FontWeight.bold,
               fontSize: 20,
             ),
@@ -88,7 +118,7 @@ class _MainPageState extends State<MainPage> {
                   //ドラッグハンドルのアイコン
                   handleIcon: Icon(
                     Icons.drag_handle,
-                    color: lightGrey,
+                    color: textColor,
                     size: 25,
                   ),
                   onReorder: (oldIndex, newIndex) {
@@ -105,15 +135,23 @@ class _MainPageState extends State<MainPage> {
                         (int index, MemoItem item) {
                           Key itemKey = Key(item.getKey);
                           //カードの色と日付・アイコンの色
-                          var color, subColor = white;
+                          var bgColor, txColor; //white;
                           if (itemKey.toString().contains('favorite')) {
-                            color = lightOrange;
+                            bgColor = highlightColor;
+                            txColor = backgroundColor;
+                          } else {
+                            bgColor = backgroundColor;
+                            txColor = textColor;
+                          }
+                          /*
+                          if (itemKey.toString().contains('favorite')) {
+                            color = highlightColor;
                           } else if (itemKey.toString().contains('remind')) {
-                            color = lightBlue;
+                            color = white; //secondaryColor;
                           } else {
                             color = white;
-                            subColor = lightGrey;
-                          }
+                            //subColor = teritiaryColor;
+                          }*/
                           return MapEntry(
                             index,
                             Slidable(
@@ -134,7 +172,8 @@ class _MainPageState extends State<MainPage> {
                                   },
                                 )
                               ],
-                              child: memoCard(item, color, subColor, index),
+                              child: memoCard(item, bgColor, txColor, index,
+                                  secondaryColor, backgroundColor, textColor),
                             ),
                           );
                         },
@@ -149,7 +188,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   //メモのカード一つ分の内容
-  Widget memoCard(MemoItem item, color, subColor, index) {
+  Widget memoCard(MemoItem item, bgColor, txColor, index, secondaryColor,
+      teritiaryColor, textColor) {
     return ExpandableNotifier(
       child: Padding(
         padding: const EdgeInsets.only(
@@ -157,7 +197,7 @@ class _MainPageState extends State<MainPage> {
         ),
         child: ScrollOnExpand(
           child: Card(
-            color: color,
+            color: bgColor,
             clipBehavior: Clip.antiAlias,
             elevation: 0.0,
             child: Builder(
@@ -167,8 +207,10 @@ class _MainPageState extends State<MainPage> {
                 return Container(
                   child: TextButton(
                     child: Expandable(
-                      collapsed: buildCollapsed(item, subColor, index),
-                      expanded: buildExpanded(item, subColor, index),
+                      collapsed: buildCollapsed(item, txColor, index,
+                          secondaryColor, teritiaryColor, textColor),
+                      expanded: buildExpanded(item, txColor, index,
+                          secondaryColor, teritiaryColor, textColor),
                     ),
                     onPressed: () {
                       controller.toggle();
@@ -184,14 +226,15 @@ class _MainPageState extends State<MainPage> {
   }
 
   //デフォルトのメモの表示内容
-  Widget buildCollapsed(item, subColor, index) {
-    return Column(
+  Widget buildCollapsed(
+      item, txColor, index, secondaryColor, backgroundColor, penColor) {
+    return Row(
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Container(
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
                 padding: EdgeInsets.only(left: 3),
                 child: Text(
                   item.getValue,
@@ -199,68 +242,74 @@ class _MainPageState extends State<MainPage> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 18,
-                    color: black,
+                    color: txColor,
                   ),
                 ),
               ),
-            ),
-            TextButton(
-              child: Padding(
-                padding: EdgeInsets.all(3),
-                child: Icon(
-                  Icons.edit_sharp,
-                  color: subColor,
-                  size: 28,
-                ),
-              ),
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(EdgeInsets.zero),
-                minimumSize: MaterialStateProperty.all(Size.zero),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              onPressed: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return CreateMemoPage(item, index);
-                    },
+              //通知の日付
+              if (item.getNotificationDate != null)
+                Container(
+                  color: secondaryColor,
+                  margin: EdgeInsets.only(top: 8),
+                  width: 180,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.notifications,
+                        color: backgroundColor,
+                      ),
+                      Text(
+                        formatDate(
+                          item.getNotificationDate,
+                          [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
+                        ),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: backgroundColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
-          ],
+                ),
+            ],
+          ),
         ),
-        //通知の日付
-        if (item.getNotificationDate != null)
-          Container(
-            padding: EdgeInsets.only(top: 6),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.notifications,
-                  color: lightYellow,
-                ),
-                Text(
-                  formatDate(
-                    item.getNotificationDate,
-                    [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
-                  ),
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: lightYellow,
-                  ),
-                ),
-              ],
+        TextButton(
+          child: Padding(
+            padding: EdgeInsets.all(3),
+            child: Icon(
+              Icons.edit_sharp,
+              color: penColor,
+              size: 28,
             ),
           ),
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all(EdgeInsets.zero),
+            minimumSize: MaterialStateProperty.all(Size.zero),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          onPressed: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return CreateMemoPage(item, index);
+                },
+              ),
+            );
+          },
+        ),
       ],
     );
   }
 
   //タップした後のメモの表示内容
-  Widget buildExpanded(item, subColor, index) {
+  Widget buildExpanded(
+      item, txColor, index, secondaryColor, backgroundColor, penColor) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -272,7 +321,7 @@ class _MainPageState extends State<MainPage> {
                   item.getValue,
                   style: TextStyle(
                     fontSize: 18,
-                    color: black,
+                    color: txColor,
                   ),
                 ),
               ),
@@ -282,12 +331,15 @@ class _MainPageState extends State<MainPage> {
         //通知の日付
         if (item.getNotificationDate != null)
           Container(
-            padding: EdgeInsets.only(top: 6),
+            color: secondaryColor,
+            margin: EdgeInsets.only(top: 8),
+            width: 180,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.notifications,
-                  color: lightYellow,
+                  color: backgroundColor,
                 ),
                 Text(
                   formatDate(
@@ -295,8 +347,9 @@ class _MainPageState extends State<MainPage> {
                     [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
                   ),
                   style: TextStyle(
-                    fontSize: 18,
-                    color: lightYellow,
+                    fontSize: 16,
+                    color: backgroundColor,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
@@ -317,7 +370,7 @@ class _MainPageState extends State<MainPage> {
                 ),
                 style: TextStyle(
                   fontSize: 16,
-                  color: subColor,
+                  color: txColor,
                 ),
               ),
             ),
@@ -326,7 +379,7 @@ class _MainPageState extends State<MainPage> {
                 padding: EdgeInsets.all(3),
                 child: Icon(
                   Icons.edit_sharp,
-                  color: subColor,
+                  color: penColor,
                   size: 28,
                 ),
               ),

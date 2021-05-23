@@ -15,8 +15,15 @@ Color yellow = Colors.yellow;
 Color pink = Colors.pink;
 Color lightBlue = Colors.blue[200];
 Color lightYellow = Colors.yellow[300];
-Color lightGrey = Colors.grey[400];
+Color lightGrey = Colors.grey[300];
 Color lightOrange = Colors.orange[300];
+Color teritiary = Color(0xffbae8e8);
+Color highlight = Color(0xffffd803);
+
+List<List<Color>> colorCombinations = [
+  [Color(0xff7EC2C2), Color(0xffe67a7a), Color(0xfffff4e1), Colors.blueGrey],
+  [Color(0xff7EC2C2), Color(0xfffff4e1), Color(0xffe67a7a), Colors.blueGrey],
+];
 
 //SharedPreferencesに保存
 Future updateSharedPreferences(List<MemoItem> itemsList) async {
@@ -31,6 +38,7 @@ Future updateSharedPreferences(List<MemoItem> itemsList) async {
 
 class UserState extends ChangeNotifier {
   List<MemoItem> itemsList;
+  List<Color> colorsList;
 
   setItems(MemoItem item) async {
     itemsList.add(item);
@@ -42,6 +50,12 @@ class UserState extends ChangeNotifier {
     itemsList = newList;
     notifyListeners();
     await updateSharedPreferences(itemsList);
+  }
+
+  setColorsList(
+      Color highlight, Color secondary, Color background, Color text) {
+    colorsList = [highlight, secondary, background, text];
+    notifyListeners();
   }
 }
 
