@@ -15,7 +15,7 @@ Color yellow = Colors.yellow;
 Color pink = Colors.pink;
 Color lightBlue = Colors.blue[200];
 Color lightYellow = Colors.yellow[300];
-Color lightGrey = Colors.grey[300];
+Color lightGrey = Colors.grey[400];
 Color lightOrange = Colors.orange[300];
 
 //SharedPreferencesに保存

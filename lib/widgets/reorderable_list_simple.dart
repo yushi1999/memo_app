@@ -76,23 +76,6 @@ class _ReorderableListSimpleState extends State<ReorderableListSimple> {
           return _buildReorderableItem(context, index);
         },
       ),
-
-      // child: Container(
-      //   padding: widget.padding,
-      //   child: CustomScrollView(
-      //     slivers: <Widget>[
-      //       SliverList(
-      //         delegate: SliverChildBuilderDelegate(
-      //           (BuildContext context, int index) {
-      //             return _buildReorderableItem(context, index);
-      //           },
-      //           childCount: widget.children.length,
-      //         ),
-      //       )
-      //     ],
-      //   ),
-      // ),
-
       onReorder: (Key draggedItem, Key newPosition) {
         int draggingIndex = _indexOfKey(draggedItem);
         int newPositionIndex = _indexOfKey(newPosition);
@@ -100,7 +83,6 @@ class _ReorderableListSimpleState extends State<ReorderableListSimple> {
         final item = _children[draggingIndex];
         setState(() {
           _newIndex = newPositionIndex;
-
           _children.removeAt(draggingIndex);
           _children.insert(newPositionIndex, item);
         });

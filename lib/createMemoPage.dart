@@ -52,32 +52,36 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
 
     //メモをUserStateに保存
     Future<bool> _willPopCallback() async {
+      var now = DateTime.now();
+      var keyWord;
+      if (isFavorite) {
+        keyWord = 'favorite';
+      } else if (isRemindValid) {
+        keyWord = 'remind';
+      } else {
+        keyWord = 'normal';
+      }
+      var newItem = MemoItem(
+        value: _textController.text,
+        isFavorite: isFavorite,
+        createdDate: now,
+        notificationDate: isRemindValid ? notificationDate : null,
+        key: now.toString() + keyWord,
+      );
+
       //新規作成時
       if (!isMemoAlreadyCreated) {
         //テキストが打ち込まれている場合のみ保存
         if (_textController.text.length > 0) {
-          var now = DateTime.now();
-          var keyWord;
-          if (isFavorite) {
-            keyWord = 'favorite';
-          } else if (isRemindValid) {
-            keyWord = 'remind';
-          } else {
-            keyWord = 'normal';
-          }
-          var newItem = MemoItem(
-            value: _textController.text,
-            isFavorite: isFavorite,
-            createdDate: now,
-            notificationDate: isRemindValid ? notificationDate : null,
-            key: now.toString() + keyWord,
-          );
           userState.setItems(newItem);
         }
       }
       //編集時
       else {
-        print('');
+        //テキスト、お気に入り、通知のデータに変化がある時
+        if (newItem.value != _textController.text ||
+            newItem.isFavorite != isFavorite ||
+            newItem.notificationDate != notificationDate) {}
       }
       Navigator.of(context).pop();
       return true;

@@ -33,7 +33,8 @@ class _MyAppState extends State<MyApp> {
         ? result.map((f) => MemoItem.fromJson(json.decode(f))).toList()
         : <MemoItem>[];
     userState.updateItemsList(itemsList);
-    print('syncSharedPreferences: $itemsList');
+    //print('syncSharedPreferences: $itemsList');
+    itemsList.forEach((item) => print('syncSharedPreferences: $item'));
   }
 
   @override

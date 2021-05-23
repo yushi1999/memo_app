@@ -111,7 +111,6 @@ class _MainPageState extends State<MainPage> {
                       color = white;
                       subColor = lightGrey;
                     }
-
                     return Slidable(
                       key: Key(item.getKey),
                       actionExtentRatio: 0.3,
@@ -121,8 +120,9 @@ class _MainPageState extends State<MainPage> {
                           icon: Icons.delete,
                           caption: '削除',
                           color: Colors.red[400],
-                          onTap: () {
-                            itemsList.remove(item);
+                          onTap: () async {
+                            await Future.delayed(Duration(milliseconds: 300),
+                                () => itemsList.remove(item));
                             userState.updateItemsList(itemsList);
                             setState(() {});
                           },
@@ -130,7 +130,8 @@ class _MainPageState extends State<MainPage> {
                       ],
                       child: memoCard(item, color, subColor),
                     );
-                  }).toList())
+                  }).toList(),
+                )
               : Container(),
         ),
       ),
@@ -195,10 +196,11 @@ class _MainPageState extends State<MainPage> {
             ),
             TextButton(
               child: Padding(
-                padding: EdgeInsets.all(4),
+                padding: EdgeInsets.all(3),
                 child: Icon(
                   Icons.edit_sharp,
                   color: subColor,
+                  size: 28,
                 ),
               ),
               style: ButtonStyle(
@@ -218,24 +220,28 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         ),
+        //通知の日付
         if (item.getNotificationDate != null)
-          Row(
-            children: [
-              Icon(
-                Icons.notifications,
-                color: lightYellow,
-              ),
-              Text(
-                formatDate(
-                  item.getNotificationDate,
-                  [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
-                ),
-                style: TextStyle(
-                  fontSize: 18,
+          Container(
+            padding: EdgeInsets.only(top: 6),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.notifications,
                   color: lightYellow,
                 ),
-              ),
-            ],
+                Text(
+                  formatDate(
+                    item.getNotificationDate,
+                    [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
+                  ),
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: lightYellow,
+                  ),
+                ),
+              ],
+            ),
           ),
       ],
     );
@@ -263,12 +269,37 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         ),
+        //通知の日付
+        if (item.getNotificationDate != null)
+          Container(
+            padding: EdgeInsets.only(top: 6),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.notifications,
+                  color: lightYellow,
+                ),
+                Text(
+                  formatDate(
+                    item.getNotificationDate,
+                    [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
+                  ),
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: lightYellow,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
         //日付と編集ボタン
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Container(
-              padding: EdgeInsets.only(right: 12),
+              padding: EdgeInsets.only(right: 12, bottom: 4),
               child: Text(
                 formatDate(
                   item.getCreatedDate,
@@ -282,10 +313,11 @@ class _MainPageState extends State<MainPage> {
             ),
             TextButton(
               child: Padding(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(3),
                 child: Icon(
                   Icons.edit_sharp,
                   color: subColor,
+                  size: 28,
                 ),
               ),
               style: ButtonStyle(
