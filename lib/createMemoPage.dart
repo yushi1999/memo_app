@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_format/date_format.dart';
 import 'sharedParts.dart';
 import 'widgets/ruledLineTextField.dart';
@@ -48,7 +50,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
   Widget build(BuildContext context) {
     final UserState userState = Provider.of<UserState>(context);
 
-    //メモを保存
+    //メモをUserStateに保存
     Future<bool> _willPopCallback() async {
       //新規作成時
       if (!isMemoAlreadyCreated) {
@@ -199,12 +201,6 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
           decoration: const InputDecoration(
             border: InputBorder.none,
           ),
-          /*
-          onChanged: (String text) {
-            setState(() {
-              value = text;
-            });
-          },*/
         ),
       ],
     );

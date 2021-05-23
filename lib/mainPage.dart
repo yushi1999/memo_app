@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expandable/expandable.dart';
 import 'package:date_format/date_format.dart';
 import 'sharedParts.dart';
@@ -18,36 +20,15 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   List<MemoItem> itemsList;
 
-  //スライドしてメモを削除
-  final _deleteMemoAction = IconSlideAction(
-    icon: Icons.delete,
-    caption: '削除',
-    color: Colors.red[400],
-    onTap: () {},
-  );
-
   @override
   initState() {
     super.initState();
-    /*
-    List memoList = [
-      '洗剤を買い足すあああああああああああああああああああああああああああああ',
-      '勉強メモ',
-      'シャンプー買う\nリンス買う\nボディーソープ買う\n歯磨き粉買う\nリップ買う',
-      '今年の目標\nアプリを作る\n自然言語処理をマスターする\nお金いっぱい稼ぐ'
-    ];
-    for (int i = 0; i < memoList.length; i++) {
-      final newItem = MemoItem(memoList[i], i.toString());
-      itemsList.add(newItem);
-    }*/
   }
 
   @override
   Widget build(BuildContext context) {
     final UserState userState = Provider.of<UserState>(context);
-    itemsList = userState.itemsList != null ? userState.itemsList : [];
-    userState.updateItemsList(itemsList);
-
+    itemsList = userState.itemsList;
     return Scaffold(
       backgroundColor: white,
       appBar: AppBar(
@@ -101,49 +82,56 @@ class _MainPageState extends State<MainPage> {
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-          child: ReorderableListSimple(
-            handleSide: ReorderableListSimpleSide.Left,
-            //ドラッグハンドルのアイコン
-            handleIcon: Icon(
-              Icons.drag_handle,
-              color: lightGrey,
-              size: 25,
-            ),
-            onReorder: (oldIndex, newIndex) {
-              setState(() {
-                MemoItem item = itemsList[oldIndex];
-                itemsList.remove(item);
-                itemsList.insert(newIndex, item);
-              });
-            },
-            children: itemsList.map((MemoItem item) {
-              Key itemKey = Key(item.getKey);
-              var color, subColor = white;
-              if (itemKey.toString().contains('favorite')) {
-                color = lightOrange;
-              } else if (itemKey.toString().contains('remind')) {
-                color = lightBlue;
-              } else {
-                color = white;
-                subColor = lightGrey;
-              }
+          child: itemsList != null
+              ? ReorderableListSimple(
+                  handleSide: ReorderableListSimpleSide.Left,
+                  //ドラッグハンドルのアイコン
+                  handleIcon: Icon(
+                    Icons.drag_handle,
+                    color: lightGrey,
+                    size: 25,
+                  ),
+                  onReorder: (oldIndex, newIndex) {
+                    setState(() {
+                      MemoItem item = itemsList[oldIndex];
+                      itemsList.remove(item);
+                      itemsList.insert(newIndex, item);
+                      userState.updateItemsList(itemsList);
+                    });
+                  },
+                  children: itemsList.map((MemoItem item) {
+                    Key itemKey = Key(item.getKey);
+                    //カードの色と日付・アイコンの色
+                    var color, subColor = white;
+                    if (itemKey.toString().contains('favorite')) {
+                      color = lightOrange;
+                    } else if (itemKey.toString().contains('remind')) {
+                      color = lightBlue;
+                    } else {
+                      color = white;
+                      subColor = lightGrey;
+                    }
 
-              return Slidable(
-                key: Key(item.getKey),
-                actionExtentRatio: 0.3,
-                actionPane: SlidableDrawerActionPane(),
-                secondaryActions: [
-                  IconSlideAction(
-                    icon: Icons.delete,
-                    caption: '削除',
-                    color: Colors.red[400],
-                    onTap: () {},
-                  )
-                ],
-                child: memoCard(item, color, subColor),
-              );
-            }).toList(),
-          ),
+                    return Slidable(
+                      key: Key(item.getKey),
+                      actionExtentRatio: 0.3,
+                      actionPane: SlidableDrawerActionPane(),
+                      secondaryActions: [
+                        IconSlideAction(
+                          icon: Icons.delete,
+                          caption: '削除',
+                          color: Colors.red[400],
+                          onTap: () {
+                            itemsList.remove(item);
+                            userState.updateItemsList(itemsList);
+                            setState(() {});
+                          },
+                        )
+                      ],
+                      child: memoCard(item, color, subColor),
+                    );
+                  }).toList())
+              : Container(),
         ),
       ),
     );

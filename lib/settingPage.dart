@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expandable/expandable.dart';
 import 'sharedParts.dart';
 import 'createMemoPage.dart';
@@ -16,108 +17,91 @@ class SettingPage extends StatefulWidget {
 }
 
 class SettingPageState extends State<SettingPage> {
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final _nameController = TextEditingController();
+  String _name;
+  @override
+  void initState() {
+    super.initState();
+    getName().then((value) {
+      setState(() {
+        _name = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: white,
       appBar: AppBar(
-        title: Text("Expandable Demo"),
-      ),
-      body: ExpandableTheme(
-        data: const ExpandableThemeData(
-          iconColor: Colors.blue,
-          useInkWell: true,
+        backgroundColor: white,
+        elevation: 0.0,
+        title: Text(
+          "設定",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: <Widget>[
-            Card2(),
-            Card2(),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: 24,
+          ),
+          onPressed: () async {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: SingleChildScrollView(
+          child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '$_name',
+              style: TextStyle(fontSize: 32),
+            ),
+            TextFormField(
+              controller: _nameController,
+              decoration: InputDecoration(hintText: '名前を入力してね'),
+            ),
+            RaisedButton(
+              child: Text('保存'),
+              onPressed: () {
+                setName().then((success) {
+                  _nameController.clear();
+                });
+              },
+            ),
+            RaisedButton(
+              child: Text('削除'),
+              onPressed: () {
+                removeName();
+              },
+            ),
           ],
         ),
-      ),
+      )),
     );
   }
-}
 
-const loremIpsum =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+  setName() async {
+    SharedPreferences prefs = await _prefs;
+    prefs.setString('name', _nameController.text);
+    setState(() {
+      _name = prefs.getString('name');
+    });
+  }
 
-class Card2 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    buildCollapsed3() {
-      return Container(
-        padding: EdgeInsets.all(10),
-        child: Text(
-          loremIpsum,
-          softWrap: true,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-      );
-    }
+  getName() async {
+    SharedPreferences prefs = await _prefs;
+    return prefs.getString('name');
+  }
 
-    buildExpanded3() {
-      return Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              loremIpsum,
-              softWrap: true,
-            ),
-          ],
-        ),
-      );
-    }
-
-    return ExpandableNotifier(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-        child: ScrollOnExpand(
-          child: Card(
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Stack(
-                  children: [
-                    Expandable(
-                      collapsed: buildCollapsed3(),
-                      expanded: buildExpanded3(),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Builder(
-                          builder: (context) {
-                            var controller = ExpandableController.of(context,
-                                required: true);
-                            return Container(
-                              width: 300,
-                              height: controller.expanded ? 200 : 50,
-                              child: TextButton(
-                                child: Text(
-                                  controller.expanded ? "COLLAPSE" : "EXPAND",
-                                  style: TextStyle(color: Colors.transparent),
-                                ),
-                                onPressed: () {
-                                  controller.toggle();
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+  removeName() async {
+    SharedPreferences prefs = await _prefs;
+    prefs.remove('name');
+    setState(() {
+      _name = null;
+    });
   }
 }
