@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:math' as math;
 import 'mainPage.dart';
 import 'sharedParts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -18,16 +19,17 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   final UserState userState = UserState();
-  Color highlightColor = Color(0xff7EC2C2);
-  Color secondaryColor = Color(0xffe67a7a);
-  Color backgroundColor = Color(0xfffff4e1);
-  Color textColor = Colors.blueGrey; //Color(0xffB8B1AB);
 
   @override
   initState() {
     super.initState();
+    var rand = new math.Random();
+    int colorIndex = rand.nextInt(colorCombinations.length);
     userState.setColorsList(
-        highlightColor, secondaryColor, backgroundColor, textColor);
+        colorCombinations[colorIndex][0],
+        colorCombinations[colorIndex][1],
+        colorCombinations[colorIndex][2],
+        colorCombinations[colorIndex][3]);
     syncDataWithSharedPreferences();
   }
 

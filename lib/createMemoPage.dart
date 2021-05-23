@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_format/date_format.dart';
@@ -106,7 +107,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
           elevation: 0.0,
           title: Text(
             isMemoAlreadyCreated ? 'メモを編集' : '新規作成',
-            style: TextStyle(
+            style: GoogleFonts.mPlus1p(
               fontWeight: FontWeight.bold,
               fontSize: 20,
               color: textColor,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expandable/expandable.dart';
 import 'package:date_format/date_format.dart';
@@ -41,11 +42,17 @@ class _MainPageState extends State<MainPage> {
         elevation: 0.0,
         title: Text(
           "Simple Memo Pad",
-          style: TextStyle(
+          style: GoogleFonts.montserrat(
             fontWeight: FontWeight.bold,
             fontSize: 20,
             color: textColor,
           ),
+          /*
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: textColor,
+          ),*/
         ),
         actions: [
           IconButton(
@@ -55,13 +62,13 @@ class _MainPageState extends State<MainPage> {
             ),
             onPressed: () {
               var rand = new math.Random();
-              int index = rand.nextInt(colorCombinations.length);
+              int colorIndex = rand.nextInt(colorCombinations.length);
               userState.setColorsList(
-                  colorCombinations[index][0],
-                  colorCombinations[index][1],
-                  colorCombinations[index][2],
-                  colorCombinations[index][3]);
-              print(index);
+                  colorCombinations[colorIndex][0],
+                  colorCombinations[colorIndex][1],
+                  colorCombinations[colorIndex][2],
+                  colorCombinations[colorIndex][3]);
+              print(colorIndex);
               setState(() {});
             },
           ),
@@ -85,17 +92,17 @@ class _MainPageState extends State<MainPage> {
       floatingActionButton: Container(
         margin: EdgeInsets.only(bottom: 60),
         child: FloatingActionButton.extended(
-          foregroundColor: highlightColor,
+          backgroundColor: highlightColor,
           icon: Icon(
             Icons.add,
             color: backgroundColor,
           ),
           label: Text(
             '作成',
-            style: TextStyle(
-              color: backgroundColor,
+            style: GoogleFonts.mPlus1p(
               fontWeight: FontWeight.bold,
               fontSize: 20,
+              color: backgroundColor,
             ),
           ),
           onPressed: () async {
@@ -251,18 +258,21 @@ class _MainPageState extends State<MainPage> {
                 Container(
                   color: secondaryColor,
                   margin: EdgeInsets.only(top: 8),
-                  width: 180,
+                  width: 160,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.notifications,
-                        color: backgroundColor,
+                      Container(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(
+                          Icons.notifications,
+                          color: backgroundColor,
+                        ),
                       ),
                       Text(
                         formatDate(
                           item.getNotificationDate,
-                          [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
+                          [mm, '/', dd, ' ', HH, ':', nn, ''],
                         ),
                         style: TextStyle(
                           fontSize: 16,
@@ -333,18 +343,21 @@ class _MainPageState extends State<MainPage> {
           Container(
             color: secondaryColor,
             margin: EdgeInsets.only(top: 8),
-            width: 180,
+            width: 160,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.notifications,
-                  color: backgroundColor,
+                Container(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Icon(
+                    Icons.notifications,
+                    color: backgroundColor,
+                  ),
                 ),
                 Text(
                   formatDate(
                     item.getNotificationDate,
-                    [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
+                    [mm, '/', dd, ' ', HH, ':', nn, ''],
                   ),
                   style: TextStyle(
                     fontSize: 16,

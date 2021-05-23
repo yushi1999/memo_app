@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expandable/expandable.dart';
@@ -27,7 +28,7 @@ class SettingPageState extends State<SettingPage> {
         elevation: 0.0,
         title: Text(
           "設定",
-          style: TextStyle(
+          style: GoogleFonts.mPlus1p(
             fontWeight: FontWeight.bold,
             fontSize: 20,
             color: textColor,

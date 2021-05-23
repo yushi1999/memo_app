@@ -13,6 +13,7 @@ Color red = Colors.red;
 Color blue = Colors.blue;
 Color yellow = Colors.yellow;
 Color pink = Colors.pink;
+Color blueGrey = Colors.blueGrey;
 Color lightBlue = Colors.blue[200];
 Color lightYellow = Colors.yellow[300];
 Color lightGrey = Colors.grey[300];
@@ -21,8 +22,9 @@ Color teritiary = Color(0xffbae8e8);
 Color highlight = Color(0xffffd803);
 
 List<List<Color>> colorCombinations = [
-  [Color(0xff7EC2C2), Color(0xffe67a7a), Color(0xfffff4e1), Colors.blueGrey],
-  [Color(0xff7EC2C2), Color(0xfffff4e1), Color(0xffe67a7a), Colors.blueGrey],
+  [Color(0xff7EC2C2), Color(0xffe67a7a), Color(0xfffff4e1), blueGrey],
+  [Color(0xff77AF9C), Color(0xffC5E99B), white, blueGrey],
+  [Color(0xff4072b3), Color(0xffeb8686), white, Colors.grey[500]],
 ];
 
 //SharedPreferencesに保存
