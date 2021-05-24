@@ -22,6 +22,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   List<MemoItem> itemsList;
   Color highlightColor;
+  Color backgroundColor;
 
   @override
   initState() {
@@ -33,7 +34,7 @@ class _MainPageState extends State<MainPage> {
     final UserState userState = Provider.of<UserState>(context);
     highlightColor = userState.colorsList[0];
     Color secondaryColor = userState.colorsList[1];
-    Color backgroundColor = userState.colorsList[2];
+    backgroundColor = userState.colorsList[2];
     Color textColor = userState.colorsList[3];
     itemsList = userState.itemsList;
     return Scaffold(
@@ -84,33 +85,35 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
-      floatingActionButton: Container(
-        margin: EdgeInsets.only(bottom: 60),
-        child: FloatingActionButton.extended(
-          backgroundColor: highlightColor,
-          icon: Icon(
-            Icons.add,
-            color: backgroundColor,
-          ),
-          label: Text(
-            '作成',
-            style: GoogleFonts.mPlus1p(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: backgroundColor,
-            ),
-          ),
-          onPressed: () async {
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return CreateMemoPage(null, -1);
+      floatingActionButton: textColor != transparent
+          ? Container(
+              margin: EdgeInsets.only(bottom: 60),
+              child: FloatingActionButton.extended(
+                backgroundColor: highlightColor,
+                icon: Icon(
+                  Icons.add,
+                  color: backgroundColor,
+                ),
+                label: Text(
+                  '作成',
+                  style: GoogleFonts.mPlus1p(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: backgroundColor,
+                  ),
+                ),
+                onPressed: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return CreateMemoPage(null, -1);
+                      },
+                    ),
+                  );
                 },
               ),
-            );
-          },
-        ),
-      ),
+            )
+          : Container(),
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
@@ -376,7 +379,7 @@ class _MainPageState extends State<MainPage> {
                   [yyyy, '/', mm, '/', dd, ' ', HH, ':', nn, ''],
                 ),
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: txColor,
                   fontWeight: FontWeight.w400,
                 ),

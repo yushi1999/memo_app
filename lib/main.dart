@@ -42,13 +42,9 @@ class _MyAppState extends State<MyApp> {
     //int colorIndex = rand.nextInt(colorCombinations.length);
 
     //SharedPreferencesから色ナンバーを取得してColorsListに代入
-    int colorIndex = userState.themeNumber != null ? userState.themeNumber : 0;
-    userState.setColorsList(
-        colorCombinations[colorIndex][0],
-        colorCombinations[colorIndex][1],
-        colorCombinations[colorIndex][2],
-        colorCombinations[colorIndex][3]);
-    print('setColorsList' + colorIndex.toString());
+
+    //int colorIndex = userState.themeNumber != null ? userState.themeNumber : 0;
+    userState.setColorsList(white, white, white, transparent);
     if (Platform.isIOS) {
       _requestIOSPermission();
     }

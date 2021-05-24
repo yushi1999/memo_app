@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+Color transparent = Colors.transparent;
 Color white = Colors.white;
 Color black = Colors.black;
 Color red = Colors.red;
