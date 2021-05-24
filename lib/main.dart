@@ -37,22 +37,25 @@ class _MyAppState extends State<MyApp> {
   @override
   initState() {
     super.initState();
-    var rand = new math.Random();
-    int colorIndex = rand.nextInt(colorCombinations.length);
-    //int colorIndex = 6;
+    syncDataWithSharedPreferences();
+    //var rand = new math.Random();
+    //int colorIndex = rand.nextInt(colorCombinations.length);
+
+    //SharedPreferencesから色ナンバーを取得してColorsListに代入
+    int colorIndex = userState.themeNumber != null ? userState.themeNumber : 0;
     userState.setColorsList(
         colorCombinations[colorIndex][0],
         colorCombinations[colorIndex][1],
         colorCombinations[colorIndex][2],
         colorCombinations[colorIndex][3]);
-    syncDataWithSharedPreferences();
-
+    print('setColorsList' + colorIndex.toString());
     if (Platform.isIOS) {
       _requestIOSPermission();
     }
     _initializePlatformSpecifics();
     //_showNotification();
-    _scheduleNotification();
+    //設定した時間後に通知を設定
+    //_scheduleNotification();
     //予約済みのローカル通知の数を取得
     _getPendingNotificationCount().then((value) =>
         debugPrint('getPendingNotificationCount:' + value.toString()));
@@ -186,11 +189,21 @@ class _MyAppState extends State<MyApp> {
   //SharedPreferencesのデータを読み出しUserStateに代入
   Future syncDataWithSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var result = prefs.getStringList('memoItemsList');
-    List<MemoItem> itemsList = result != null
-        ? result.map((f) => MemoItem.fromJson(json.decode(f))).toList()
+    var memoItemsList = prefs.getStringList('memoItemsList');
+
+    List<MemoItem> itemsList = memoItemsList != null
+        ? memoItemsList.map((f) => MemoItem.fromJson(json.decode(f))).toList()
         : <MemoItem>[];
     userState.updateItemsList(itemsList);
+    int themeNumber =
+        prefs.getInt('themeNumber') != null ? prefs.getInt('themeNumber') : 0;
+    userState.setThemeNumber(themeNumber);
+    print('syncThemeNumber: $themeNumber');
+    userState.setColorsList(
+        colorCombinations[themeNumber][0],
+        colorCombinations[themeNumber][1],
+        colorCombinations[themeNumber][2],
+        colorCombinations[themeNumber][3]);
     //print('syncSharedPreferences: $itemsList');
     itemsList.forEach((item) => print('syncSharedPreferences: $item'));
   }

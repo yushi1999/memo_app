@@ -24,7 +24,7 @@ Color highlight = Color(0xffffd803);
 
 List<List<Color>> colorCombinations = [
   [Color(0xff7EC2C2), Color(0xffe67a7a), white, blueGrey],
-  [Color(0xff77AF9C), Color(0xffC5E99B), white, middleGrey],
+  [Color(0xff77AF9C), Color(0xffC5E99B), white, blueGrey],
   [Color(0xff4072b3), Color(0xffeb8686), white, middleGrey],
   [Color(0xff79a1d4), Color(0xffabcae8), white, blueGrey],
   [Color(0xffef866b), Color(0xffbcb5b5), white, blueGrey],
@@ -43,9 +43,16 @@ Future updateSharedPreferences(List<MemoItem> itemsList) async {
   print('updateSharedPreferences: $itemsListPref');
 }
 
+Future updateThemeNumber(int number) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('themeNumber', number);
+  print('updateThemeNumber: $number');
+}
+
 class UserState extends ChangeNotifier {
   List<MemoItem> itemsList;
   List<Color> colorsList;
+  int themeNumber;
 
   setItems(MemoItem item) async {
     itemsList.add(item);
@@ -63,6 +70,12 @@ class UserState extends ChangeNotifier {
       Color highlight, Color secondary, Color background, Color text) {
     colorsList = [highlight, secondary, background, text];
     notifyListeners();
+  }
+
+  setThemeNumber(int number) async {
+    themeNumber = number;
+    notifyListeners();
+    await updateThemeNumber(number);
   }
 }
 

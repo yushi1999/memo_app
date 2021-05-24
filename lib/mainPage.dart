@@ -21,6 +21,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<MemoItem> itemsList;
+  Color highlightColor;
 
   @override
   initState() {
@@ -30,7 +31,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final UserState userState = Provider.of<UserState>(context);
-    Color highlightColor = userState.colorsList[0];
+    highlightColor = userState.colorsList[0];
     Color secondaryColor = userState.colorsList[1];
     Color backgroundColor = userState.colorsList[2];
     Color textColor = userState.colorsList[3];
@@ -47,12 +48,6 @@ class _MainPageState extends State<MainPage> {
             fontSize: 20,
             color: textColor,
           ),
-          /*
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: textColor,
-          ),*/
         ),
         actions: [
           IconButton(
@@ -60,7 +55,7 @@ class _MainPageState extends State<MainPage> {
               Icons.rotate_left,
               color: textColor,
             ),
-            onPressed: () {
+            onPressed: () async {
               var rand = new math.Random();
               int colorIndex = rand.nextInt(colorCombinations.length);
               userState.setColorsList(
@@ -68,7 +63,7 @@ class _MainPageState extends State<MainPage> {
                   colorCombinations[colorIndex][1],
                   colorCombinations[colorIndex][2],
                   colorCombinations[colorIndex][3]);
-              print(colorIndex);
+              userState.setThemeNumber(colorIndex);
               setState(() {});
             },
           ),
@@ -119,7 +114,7 @@ class _MainPageState extends State<MainPage> {
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-          child: itemsList != null
+          child: (itemsList != null && highlightColor != null)
               ? ReorderableListSimple(
                   handleSide: ReorderableListSimpleSide.Left,
                   //ドラッグハンドルのアイコン
@@ -150,15 +145,6 @@ class _MainPageState extends State<MainPage> {
                             bgColor = backgroundColor;
                             txColor = textColor;
                           }
-                          /*
-                          if (itemKey.toString().contains('favorite')) {
-                            color = highlightColor;
-                          } else if (itemKey.toString().contains('remind')) {
-                            color = white; //secondaryColor;
-                          } else {
-                            color = white;
-                            //subColor = teritiaryColor;
-                          }*/
                           return MapEntry(
                             index,
                             Slidable(
@@ -392,6 +378,7 @@ class _MainPageState extends State<MainPage> {
                 style: TextStyle(
                   fontSize: 16,
                   color: txColor,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ),
