@@ -74,7 +74,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
         isFavorite: isFavorite,
         createdDate: now,
         notificationDate: isRemindValid ? notificationDate : null,
-        key: memoItem == null ? now.toString() + keyWord : memoItem.key,
+        key: now.toString() + keyWord,
       );
 
       //新規作成時

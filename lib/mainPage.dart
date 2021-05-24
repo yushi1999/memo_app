@@ -21,9 +21,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<MemoItem> itemsList;
-  Color highlightColor;
-  Color backgroundColor;
-
   @override
   initState() {
     super.initState();
@@ -32,9 +29,9 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final UserState userState = Provider.of<UserState>(context);
-    highlightColor = userState.colorsList[0];
+    Color highlightColor = userState.colorsList[0];
     Color secondaryColor = userState.colorsList[1];
-    backgroundColor = userState.colorsList[2];
+    Color backgroundColor = userState.colorsList[2];
     Color textColor = userState.colorsList[3];
     itemsList = userState.itemsList;
     return Scaffold(
@@ -176,7 +173,7 @@ class _MainPageState extends State<MainPage> {
                                   },
                                 )
                               ],
-                              child: memoCard(item, bgColor, txColor, index,
+                              child: memoCard(item, index, highlightColor,
                                   secondaryColor, backgroundColor, textColor),
                             ),
                           );
@@ -192,8 +189,9 @@ class _MainPageState extends State<MainPage> {
   }
 
   //メモのカード一つ分の内容
-  Widget memoCard(MemoItem item, bgColor, txColor, index, secondaryColor,
-      teritiaryColor, textColor) {
+  Widget memoCard(MemoItem item, index, highlightColor, secondaryColor,
+      backgroundColor, textColor) {
+    String itemKey = Key(item.getKey).toString();
     return ExpandableNotifier(
       child: Padding(
         padding: const EdgeInsets.only(
@@ -201,7 +199,8 @@ class _MainPageState extends State<MainPage> {
         ),
         child: ScrollOnExpand(
           child: Card(
-            color: bgColor,
+            color:
+                itemKey.contains('favorite') ? highlightColor : backgroundColor,
             clipBehavior: Clip.antiAlias,
             elevation: 0.0,
             child: Builder(
@@ -211,10 +210,10 @@ class _MainPageState extends State<MainPage> {
                 return Container(
                   child: TextButton(
                     child: Expandable(
-                      collapsed: buildCollapsed(item, txColor, index,
-                          secondaryColor, teritiaryColor, textColor),
-                      expanded: buildExpanded(item, txColor, index,
-                          secondaryColor, teritiaryColor, textColor),
+                      collapsed: buildCollapsed(item, index, secondaryColor,
+                          backgroundColor, textColor),
+                      expanded: buildExpanded(item, index, secondaryColor,
+                          backgroundColor, textColor),
                     ),
                     onPressed: () {
                       controller.toggle();
@@ -231,7 +230,8 @@ class _MainPageState extends State<MainPage> {
 
   //デフォルトのメモの表示内容
   Widget buildCollapsed(
-      item, txColor, index, secondaryColor, backgroundColor, penColor) {
+      item, index, secondaryColor, backgroundColor, textColor) {
+    String itemKey = Key(item.getKey).toString();
     return Row(
       children: [
         Expanded(
@@ -246,7 +246,9 @@ class _MainPageState extends State<MainPage> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 18,
-                    color: txColor,
+                    color: itemKey.contains('favorite')
+                        ? backgroundColor
+                        : textColor,
                   ),
                 ),
               ),
@@ -288,7 +290,7 @@ class _MainPageState extends State<MainPage> {
             padding: EdgeInsets.all(3),
             child: Icon(
               Icons.edit_sharp,
-              color: penColor,
+              color: textColor,
               size: 26,
             ),
           ),
@@ -313,7 +315,8 @@ class _MainPageState extends State<MainPage> {
 
   //タップした後のメモの表示内容
   Widget buildExpanded(
-      item, txColor, index, secondaryColor, backgroundColor, penColor) {
+      item, index, secondaryColor, backgroundColor, textColor) {
+    String itemKey = Key(item.getKey).toString();
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,7 +331,9 @@ class _MainPageState extends State<MainPage> {
                   item.getValue,
                   style: TextStyle(
                     fontSize: 18,
-                    color: txColor,
+                    color: itemKey.contains('favorite')
+                        ? backgroundColor
+                        : textColor,
                   ),
                 ),
               ),
@@ -380,7 +385,9 @@ class _MainPageState extends State<MainPage> {
                 ),
                 style: TextStyle(
                   fontSize: 14,
-                  color: txColor,
+                  color: itemKey.contains('favorite')
+                      ? backgroundColor
+                      : textColor,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -390,7 +397,7 @@ class _MainPageState extends State<MainPage> {
                 padding: EdgeInsets.all(3),
                 child: Icon(
                   Icons.edit_sharp,
-                  color: penColor,
+                  color: textColor,
                   size: 26,
                 ),
               ),
