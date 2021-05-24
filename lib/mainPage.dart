@@ -287,7 +287,7 @@ class _MainPageState extends State<MainPage> {
         ),
         TextButton(
           child: Padding(
-            padding: EdgeInsets.all(3),
+            padding: EdgeInsets.only(left: 3),
             child: Icon(
               Icons.edit_sharp,
               color: textColor,
@@ -394,7 +394,7 @@ class _MainPageState extends State<MainPage> {
             ),
             TextButton(
               child: Padding(
-                padding: EdgeInsets.all(3),
+                padding: EdgeInsets.only(left: 3),
                 child: Icon(
                   Icons.edit_sharp,
                   color: textColor,
