@@ -131,7 +131,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
         body: SafeArea(
           child: SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 13, vertical: 6),
               child: Column(
                 children: [
                   if (isRemindValid)

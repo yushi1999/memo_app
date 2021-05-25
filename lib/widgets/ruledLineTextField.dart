@@ -7,20 +7,22 @@ class RuledLineTextField extends StatelessWidget {
   RuledLineTextField(this.globalKeyGetTextField, this.color);
   final GlobalKey globalKeyGetTextField;
   final Color color;
+  final int maxLines = 180;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Stack(
         children: <Widget>[
           CustomPaint(
-            painter: TextUnderLinePainter(globalKeyGetTextField, 150, color),
+            painter:
+                TextUnderLinePainter(globalKeyGetTextField, maxLines, color),
           ),
           TextField(
             maxLength: 2500,
             key: globalKeyGetTextField,
             keyboardType: TextInputType.multiline,
-            maxLines: 150,
-            decoration: const InputDecoration(border: InputBorder.none),
+            maxLines: maxLines,
+            decoration: InputDecoration(border: InputBorder.none),
           ),
         ],
       ),

@@ -194,7 +194,6 @@ class _MyAppState extends State<MyApp> {
         colorCombinations[themeNumber][1],
         colorCombinations[themeNumber][2],
         colorCombinations[themeNumber][3]);
-    //print('syncSharedPreferences: $itemsList');
     itemsList.forEach((item) => print('syncSharedPreferences: $item'));
   }
 

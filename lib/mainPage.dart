@@ -114,7 +114,7 @@ class _MainPageState extends State<MainPage> {
           : Container(),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          padding: EdgeInsets.only(right: 4, left: 4, top: 6, bottom: 6),
           child: (itemsList != null && highlightColor != null)
               ? ReorderableListSimple(
                   handleSide: ReorderableListSimpleSide.Left,
@@ -231,7 +231,7 @@ class _MainPageState extends State<MainPage> {
               Container(
                 padding: EdgeInsets.only(left: 3),
                 child: Text(
-                  item.getValue,
+                  item.getValue.replaceAll(RegExp(r'\n'), ' '),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
