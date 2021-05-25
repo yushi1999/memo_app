@@ -205,6 +205,9 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false, //デバッグの帯を消す
         title: 'memoApp',
         theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            brightness: Brightness.dark,
+          ),
           primarySwatch: Colors.grey,
           backgroundColor: Colors.white,
         ),

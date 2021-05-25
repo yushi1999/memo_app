@@ -20,6 +20,7 @@ Color lightYellow = Colors.yellow[300];
 Color lightGrey = Colors.grey[300];
 Color lightOrange = Colors.orange[300];
 Color lightGreen = Colors.lightGreen;
+Color blackBackground = Colors.grey[850];
 
 List<List<Color>> colorCombinations = [
   [Color(0xff7EC2C2), Color(0xffe67a7a), white, blueGrey],
@@ -30,8 +31,7 @@ List<List<Color>> colorCombinations = [
   [Color(0xffff9800), Color(0xff235180), white, middleGrey],
   [Color(0xff333333), Color(0xff60caad), Color(0xffe9e9e9), blueGrey],
   [middleGrey, Colors.grey[400], white, black],
-  [lightGrey, middleGrey, Colors.grey[850], white],
-  //[Colors.green[100], lightGreen, Colors.grey[850], lightGreen],
+  [lightGrey, middleGrey, blackBackground, white],
 ];
 
 //SharedPreferencesに保存
