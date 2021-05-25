@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expandable/expandable.dart';
 import 'package:date_format/date_format.dart';
 import 'sharedParts.dart';
@@ -54,8 +51,12 @@ class _MainPageState extends State<MainPage> {
               color: textColor,
             ),
             onPressed: () async {
-              var rand = new math.Random();
-              int colorIndex = rand.nextInt(colorCombinations.length);
+              //var rand = new math.Random();
+              //int colorIndex = rand.nextInt(colorCombinations.length);
+              int colorIndex =
+                  userState.themeNumber != colorCombinations.length - 1
+                      ? userState.themeNumber + 1
+                      : 0;
               userState.setColorsList(
                   colorCombinations[colorIndex][0],
                   colorCombinations[colorIndex][1],
@@ -135,16 +136,6 @@ class _MainPageState extends State<MainPage> {
                       .asMap()
                       .map(
                         (int index, MemoItem item) {
-                          Key itemKey = Key(item.getKey);
-                          //カードの色と日付・アイコンの色
-                          var bgColor, txColor; //white;
-                          if (itemKey.toString().contains('favorite')) {
-                            bgColor = highlightColor;
-                            txColor = backgroundColor;
-                          } else {
-                            bgColor = backgroundColor;
-                            txColor = textColor;
-                          }
                           return MapEntry(
                             index,
                             Slidable(
@@ -180,8 +171,7 @@ class _MainPageState extends State<MainPage> {
                         },
                       )
                       .values
-                      .toList(),
-                )
+                      .toList())
               : Container(),
         ),
       ),

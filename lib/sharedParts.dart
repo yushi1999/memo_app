@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import "package:intl/intl.dart";
 import 'dart:convert';
-import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,8 +19,7 @@ Color lightBlue = Colors.blue[200];
 Color lightYellow = Colors.yellow[300];
 Color lightGrey = Colors.grey[300];
 Color lightOrange = Colors.orange[300];
-Color teritiary = Color(0xffbae8e8);
-Color highlight = Color(0xffffd803);
+Color lightGreen = Colors.lightGreen;
 
 List<List<Color>> colorCombinations = [
   [Color(0xff7EC2C2), Color(0xffe67a7a), white, blueGrey],
@@ -30,7 +28,10 @@ List<List<Color>> colorCombinations = [
   [Color(0xff79a1d4), Color(0xffabcae8), white, blueGrey],
   [Color(0xffef866b), Color(0xffbcb5b5), white, blueGrey],
   [Color(0xffff9800), Color(0xff235180), white, middleGrey],
-  [Color(0xff333333), Color(0xff60caad), Color(0xffe9e9e9), blueGrey]
+  [Color(0xff333333), Color(0xff60caad), Color(0xffe9e9e9), blueGrey],
+  [middleGrey, Colors.grey[400], white, black],
+  [lightGrey, middleGrey, Colors.grey[850], white],
+  //[Colors.green[100], lightGreen, Colors.grey[850], lightGreen],
 ];
 
 //SharedPreferencesに保存
@@ -104,8 +105,6 @@ class MemoItem {
   Map toJson() => {
         'value': value,
         'key': key,
-        //'createdDate': createdDate.toString(),
-        //'notificationDate': notificationDate.toString(),
         'createdDate': formatter.format(createdDate),
         'notificationDate': notificationDate != null
             ? formatter.format(notificationDate)

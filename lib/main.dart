@@ -38,12 +38,6 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
     syncDataWithSharedPreferences();
-    //var rand = new math.Random();
-    //int colorIndex = rand.nextInt(colorCombinations.length);
-
-    //SharedPreferencesから色ナンバーを取得してColorsListに代入
-
-    //int colorIndex = userState.themeNumber != null ? userState.themeNumber : 0;
     userState.setColorsList(white, white, white, transparent);
     if (Platform.isIOS) {
       _requestIOSPermission();
