@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'dart:math' as math;
 import 'mainPage.dart';
 import 'sharedParts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -85,7 +84,7 @@ class _MyAppState extends State<MyApp> {
       //onNotificationClick(payload); // your call back to the UI
     });
   }
-
+  /*
   Future<void> _showNotification() async {
     var androidChannelSpecifics = AndroidNotificationDetails(
       'CHANNEL_ID',
@@ -152,7 +151,7 @@ class _MyAppState extends State<MyApp> {
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
-  }
+  }*/
 
   Future<int> _getPendingNotificationCount() async {
     List<PendingNotificationRequest> p =
@@ -161,16 +160,6 @@ class _MyAppState extends State<MyApp> {
       print('pendingNotificationRequests' + value.id.toString());
     });
     return p.length;
-  }
-
-  //一つの通知をキャンセル
-  Future<void> _cancelNotification() async {
-    await flutterLocalNotificationsPlugin.cancel(0);
-  }
-
-  //全ての通知をキャンセル
-  Future<void> _cancelAllNotification() async {
-    await flutterLocalNotificationsPlugin.cancelAll();
   }
 
   //SharedPreferencesのデータを読み出しUserStateに代入

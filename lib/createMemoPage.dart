@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_format/date_format.dart';
 import 'sharedParts.dart';
 import 'widgets/ruledLineTextField.dart';
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class CreateMemoPage extends StatefulWidget {
@@ -75,12 +71,6 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
     }
     return newId;
   } //残りの通知数を取得
-
-  Future<int> _getPendingNotificationCount() async {
-    List<PendingNotificationRequest> p =
-        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
-    return p.length;
-  }
 
   // スケジュールに新しい通知を追加
   Future<void> _createNewNotification(MemoItem memoItem) async {

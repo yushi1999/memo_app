@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../sharedParts.dart';
-
 //int maxLines = 300;
 
 class RuledLineTextField extends StatelessWidget {
