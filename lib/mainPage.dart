@@ -231,8 +231,9 @@ class _MainPageState extends State<MainPage> {
               Container(
                 padding: EdgeInsets.only(left: 3),
                 child: Text(
-                  item.getValue.replaceAll(RegExp(r'\n'), ' '),
-                  maxLines: 3,
+                  item.getValue,
+                  //item.getValue.replaceAll(RegExp(r'\n'), ' '),
+                  maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 18,

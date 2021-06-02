@@ -70,14 +70,12 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
       newId += 1;
     }
     return newId;
-  } //残りの通知数を取得
+  }
 
   // スケジュールに新しい通知を追加
   Future<void> _createNewNotification(MemoItem memoItem) async {
     var tzScheduleNotificationDateTime =
         tz.TZDateTime.from(memoItem.getNotificationDate, tz.local);
-    //tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5));
-    //var atzScheduleNotificationDateTime =
 
     var androidChannelSpecifics = AndroidNotificationDetails(
       'CHANNEL_ID 1',
@@ -94,7 +92,6 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
       importance: Importance.max,
       priority: Priority.high,
       playSound: false,
-      //timeoutAfter: 5000, //通知が消失するまで
       styleInformation: DefaultStyleInformation(true, true),
     );
     var iosChannelSpecifics = IOSNotificationDetails(
@@ -108,15 +105,17 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
     final int newId = memoItem.getnotificationId;
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        newId,
-        memoItem.value,
-        memoItem.value,
-        tzScheduleNotificationDateTime,
-        platformChannelSpecifics,
-        payload: 'Test Payload',
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+      newId,
+      memoItem.value,
+      memoItem.value,
+      tzScheduleNotificationDateTime,
+      platformChannelSpecifics,
+      payload: 'Test Payload',
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      //matchDateTimeComponents: DateTimeComponents.,
+    );
     print('Notification was created. id:' + newId.toString());
   }
 
@@ -170,7 +169,8 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
           List<MemoItem> itemsList = userState.itemsList;
           itemsList[index] = newItem;
           userState.updateItemsList(itemsList);
-          if (isRemindValid) {
+          if (isRemindValid &&
+              newItem.notificationDate.isAfter(DateTime.now())) {
             //通知が新たに設定された時
             if (memoItem.notificationDate == null &&
                 newItem.notificationDate != null) {
@@ -183,7 +183,8 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
             }
           } else {
             if (memoItem.notificationDate != null &&
-                newItem.notificationDate == null) {
+                newItem.notificationDate == null &&
+                memoItem.notificationDate.isAfter(DateTime.now())) {
               //指定したIDの通知を消去
               await flutterLocalNotificationsPlugin
                   .cancel(memoItem.getnotificationId);
@@ -230,15 +231,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
               padding: EdgeInsets.symmetric(horizontal: 13, vertical: 6),
               child: Column(
                 children: [
-                  if (isRemindValid)
-                    Text(
-                      'リマインド  ' +
-                          formatDate(
-                            notificationDate,
-                            [mm, '/', dd, ' ', HH, ':', nn, ''],
-                          ),
-                      style: TextStyle(color: Colors.grey),
-                    ),
+                  if (isRemindValid) remindSettings(),
                   //罫線付き入力フォーム
                   ruledLineInput(textColor, secondaryColor),
                 ],
@@ -278,6 +271,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
       onPressed: () async {
         var now = DateTime.now();
         var picked;
+
         if (isRemindValid == false) {
           picked = await DatePicker.showDateTimePicker(
             context,
@@ -299,6 +293,21 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
             isRemindValid = !isRemindValid;
           });
       },
+    );
+  }
+
+  //通知の設定フォーム
+  //通知が単発か、毎日か、毎週かをチェックボックスで選択するのと時刻を選択できるようにする
+  Widget remindSettings() {
+    return Container(
+      child: Text(
+        'リマインド  ' +
+            formatDate(
+              notificationDate,
+              [mm, '/', dd, ' ', HH, ':', nn, ''],
+            ),
+        style: TextStyle(color: Colors.grey),
+      ),
     );
   }
 
