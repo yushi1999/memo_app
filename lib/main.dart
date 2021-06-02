@@ -114,9 +114,12 @@ class _MyAppState extends State<MyApp> {
 
   // ここから追加
   Future<void> _scheduleNotification() async {
-    //var scheduleNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
+    final DateTime thirtySeconds = DateTime.now().add(Duration(seconds: 10));
     var tzScheduleNotificationDateTime =
-        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5));
+        tz.TZDateTime.from(thirtySeconds, tz.local);
+    //tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5));
+    //var atzScheduleNotificationDateTime =
+
     var androidChannelSpecifics = AndroidNotificationDetails(
       'CHANNEL_ID 1',
       'CHANNEL_NAME 1',
@@ -132,7 +135,7 @@ class _MyAppState extends State<MyApp> {
       importance: Importance.max,
       priority: Priority.high,
       playSound: false,
-      timeoutAfter: 5000,
+      //timeoutAfter: 5000, //通知が消失するまで
       styleInformation: DefaultStyleInformation(true, true),
     );
     var iosChannelSpecifics = IOSNotificationDetails(
@@ -142,18 +145,9 @@ class _MyAppState extends State<MyApp> {
       android: androidChannelSpecifics,
       iOS: iosChannelSpecifics,
     );
-    /*
-    await flutterLocalNotificationsPlugin.schedule(
-      0,
-      'Test Title',
-      'Test Body',
-      scheduleNotificationDateTime,
-      platformChannelSpecifics,
-      payload: 'Test Payload',
-    );*/
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(0, 'Test Title',
-        'Test Body', tzScheduleNotificationDateTime, platformChannelSpecifics,
+    await flutterLocalNotificationsPlugin.zonedSchedule(0, 'テストタイトル', 'テストボディ',
+        tzScheduleNotificationDateTime, platformChannelSpecifics,
         payload: 'Test Payload',
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
@@ -163,6 +157,9 @@ class _MyAppState extends State<MyApp> {
   Future<int> _getPendingNotificationCount() async {
     List<PendingNotificationRequest> p =
         await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    p.forEach((value) {
+      print('pendingNotificationRequests' + value.id.toString());
+    });
     return p.length;
   }
 

@@ -3,10 +3,14 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_format/date_format.dart';
 import 'sharedParts.dart';
 import 'widgets/ruledLineTextField.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class CreateMemoPage extends StatefulWidget {
   CreateMemoPage(this.memoItem, this.index);
@@ -29,6 +33,9 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
   final globalKeyGetTextField = GlobalKey();
   var _textController;
 
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin(); // 追加
+
   @override
   initState() {
     super.initState();
@@ -48,6 +55,79 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
         isRemindValid = true;
     }
     _textController = TextEditingController(text: value);
+  }
+
+  //通知IDを作成して返す
+  Future<int> _createNotificationKey(DateTime notificationDate) async {
+    List<int> existingIdList = [];
+    List<PendingNotificationRequest> p =
+        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    p.forEach((value) {
+      existingIdList.add(value.id);
+    });
+    int day = notificationDate.day;
+    int hour = notificationDate.hour;
+    int minute = notificationDate.minute;
+    //日、時間、分を足した数字をIDにする
+    int newId = day + hour + minute;
+    while (existingIdList.contains(newId)) {
+      newId += 1;
+    }
+    return newId;
+  } //残りの通知数を取得
+
+  Future<int> _getPendingNotificationCount() async {
+    List<PendingNotificationRequest> p =
+        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    return p.length;
+  }
+
+  // スケジュールに新しい通知を追加
+  Future<void> _createNewNotification(MemoItem memoItem) async {
+    var tzScheduleNotificationDateTime =
+        tz.TZDateTime.from(memoItem.getNotificationDate, tz.local);
+    //tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5));
+    //var atzScheduleNotificationDateTime =
+
+    var androidChannelSpecifics = AndroidNotificationDetails(
+      'CHANNEL_ID 1',
+      'CHANNEL_NAME 1',
+      "CHANNEL_DESCRIPTION 1",
+      icon: 'app_icon',
+      //sound: RawResourceAndroidNotificationSound('my_sound'),
+      largeIcon: DrawableResourceAndroidBitmap('app_icon'),
+      enableLights: true,
+      color: const Color.fromARGB(255, 255, 0, 0),
+      ledColor: const Color.fromARGB(255, 255, 0, 0),
+      ledOnMs: 1000,
+      ledOffMs: 500,
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: false,
+      //timeoutAfter: 5000, //通知が消失するまで
+      styleInformation: DefaultStyleInformation(true, true),
+    );
+    var iosChannelSpecifics = IOSNotificationDetails(
+        //sound: 'my_sound.aiff',
+        );
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidChannelSpecifics,
+      iOS: iosChannelSpecifics,
+    );
+
+    final int newId = memoItem.getnotificationId;
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        newId,
+        memoItem.value,
+        memoItem.value,
+        tzScheduleNotificationDateTime,
+        platformChannelSpecifics,
+        payload: 'Test Payload',
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+    print('Notification was created. id:' + newId.toString());
   }
 
   @override
@@ -73,6 +153,9 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
         value: _textController.text,
         isFavorite: isFavorite,
         createdDate: now,
+        notificationId: isRemindValid
+            ? await _createNotificationKey(notificationDate)
+            : null,
         notificationDate: isRemindValid ? notificationDate : null,
         key: now.toString() + keyWord,
       );
@@ -82,6 +165,10 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
         //テキストが打ち込まれている場合のみ保存
         if (_textController.text.length > 0) {
           userState.setItems(newItem);
+          //通知が設定されている場合はスケジュールに追加
+          if (isRemindValid) {
+            await _createNewNotification(newItem);
+          }
         }
       }
       //編集時
@@ -93,6 +180,25 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
           List<MemoItem> itemsList = userState.itemsList;
           itemsList[index] = newItem;
           userState.updateItemsList(itemsList);
+          if (isRemindValid) {
+            //通知が新たに設定された時
+            if (memoItem.notificationDate == null &&
+                newItem.notificationDate != null) {
+              await _createNewNotification(newItem);
+            } //通知の時間が変更された時
+            else if (memoItem.notificationDate != newItem.notificationDate &&
+                newItem.notificationDate != null) {
+              newItem.updateNotificationId(memoItem.getnotificationId);
+              await _createNewNotification(newItem);
+            }
+          } else {
+            if (memoItem.notificationDate != null &&
+                newItem.notificationDate == null) {
+              //指定したIDの通知を消去
+              await flutterLocalNotificationsPlugin
+                  .cancel(memoItem.getnotificationId);
+            }
+          }
         }
       }
       Navigator.of(context).pop();

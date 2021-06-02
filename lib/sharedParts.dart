@@ -84,11 +84,13 @@ class UserState extends ChangeNotifier {
 class MemoItem {
   String value;
   String key;
+  int notificationId;
   DateTime createdDate, notificationDate;
   bool isFavorite;
   MemoItem({
     @required this.value,
     @required this.isFavorite,
+    @required this.notificationId,
     @required this.createdDate,
     @required this.notificationDate,
     @required this.key,
@@ -97,8 +99,13 @@ class MemoItem {
   get getValue => value;
   get getCreatedDate => createdDate;
   get getNotificationDate => notificationDate;
+  get getnotificationId => notificationId;
   get getIsFavorite => isFavorite;
   get getKey => key;
+
+  void updateNotificationId(int newId) {
+    notificationId = newId;
+  }
 
   //Map型に変換
   var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
