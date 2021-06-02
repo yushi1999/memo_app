@@ -175,37 +175,18 @@ class ReorderableItemSimple extends StatelessWidget {
       highlightColor,
       backgroundColor) {
     bool placeholder = state == rol.ReorderableItemState.placeholder;
+    //境界線を設定
+    Border _border = Border(bottom: BorderSide(width: 0.5, color: middleGrey));
     var color;
     if (!placeholder) {
       if (key.toString().contains('favorite'))
         color = highlightColor;
       else
         color = backgroundColor;
-      return BoxDecoration(color: color);
+      return BoxDecoration(color: color, border: _border);
     } else {
-      return BoxDecoration(color: backgroundColor);
+      return BoxDecoration(color: backgroundColor, border: _border);
     }
-    //return BoxDecoration(color: isFavorite ? lightOrange : white);
-    /*
-    //タップしてドラッグ中～ドラッグ終了まで
-    if (state == rol.ReorderableItemState.dragProxy ||
-        state == rol.ReorderableItemState.dragProxyFinished) {
-      return BoxDecoration(
-        color: white,
-      );
-    } else {
-      bool placeholder = state == rol.ReorderableItemState.placeholder;
-      return BoxDecoration(
-        border: Border(
-            top: !placeholder
-                ? Divider.createBorderSide(context)
-                : BorderSide.none,
-            bottom: placeholder
-                ? BorderSide.none
-                : Divider.createBorderSide(context)),
-        color: placeholder ? null : (isFavorite ? lightOrange : white),
-      );
-    }*/
   }
 
   @override

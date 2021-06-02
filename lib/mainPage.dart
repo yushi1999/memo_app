@@ -236,6 +236,7 @@ class _MainPageState extends State<MainPage> {
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
+                    height: 1.1,
                     fontSize: 18,
                     color: itemKey.contains('favorite')
                         ? backgroundColor
@@ -321,6 +322,7 @@ class _MainPageState extends State<MainPage> {
                 child: Text(
                   item.getValue,
                   style: TextStyle(
+                    height: 1.1,
                     fontSize: 18,
                     color: itemKey.contains('favorite')
                         ? backgroundColor
