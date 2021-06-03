@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memo_app/showNotificationInfo.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -269,6 +270,15 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
         size: 32,
       ),
       onPressed: () async {
+        //通知情報画面を開いて通知頻度と日付の情報を返してもらう
+        showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return ShowNotificationInfo('date', null);
+          },
+        ).then((value) => null);
+        /*
+        //通知を設定してisRemindをtrueにする
         var now = DateTime.now();
         var picked;
 
@@ -292,6 +302,7 @@ class _CreateMemoPageState extends State<CreateMemoPage> {
           setState(() {
             isRemindValid = !isRemindValid;
           });
+          */
       },
     );
   }

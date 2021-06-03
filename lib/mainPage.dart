@@ -51,8 +51,6 @@ class _MainPageState extends State<MainPage> {
               color: textColor,
             ),
             onPressed: () async {
-              //var rand = new math.Random();
-              //int colorIndex = rand.nextInt(colorCombinations.length);
               int colorIndex =
                   userState.themeNumber != colorCombinations.length - 1
                       ? userState.themeNumber + 1
@@ -87,7 +85,7 @@ class _MainPageState extends State<MainPage> {
           ? Container(
               margin: EdgeInsets.only(bottom: 60),
               child: FloatingActionButton.extended(
-                backgroundColor: highlightColor,
+                backgroundColor: secondaryColor,
                 icon: Icon(
                   Icons.add,
                   color: backgroundColor,
@@ -197,13 +195,14 @@ class _MainPageState extends State<MainPage> {
               builder: (context) {
                 var controller =
                     ExpandableController.of(context, required: true);
+                var textHeight = 1.18;
                 return Container(
                   child: TextButton(
                     child: Expandable(
                       collapsed: buildCollapsed(item, index, secondaryColor,
-                          backgroundColor, textColor),
+                          backgroundColor, textColor, textHeight),
                       expanded: buildExpanded(item, index, secondaryColor,
-                          backgroundColor, textColor),
+                          backgroundColor, textColor, textHeight),
                     ),
                     onPressed: () {
                       controller.toggle();
@@ -220,7 +219,7 @@ class _MainPageState extends State<MainPage> {
 
   //デフォルトのメモの表示内容
   Widget buildCollapsed(
-      item, index, secondaryColor, backgroundColor, textColor) {
+      item, index, secondaryColor, backgroundColor, textColor, textHeight) {
     String itemKey = Key(item.getKey).toString();
     return Row(
       children: [
@@ -236,7 +235,7 @@ class _MainPageState extends State<MainPage> {
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    height: 1.1,
+                    height: textHeight,
                     fontSize: 18,
                     color: itemKey.contains('favorite')
                         ? backgroundColor
@@ -307,7 +306,7 @@ class _MainPageState extends State<MainPage> {
 
   //タップした後のメモの表示内容
   Widget buildExpanded(
-      item, index, secondaryColor, backgroundColor, textColor) {
+      item, index, secondaryColor, backgroundColor, textColor, textHeight) {
     String itemKey = Key(item.getKey).toString();
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -322,7 +321,7 @@ class _MainPageState extends State<MainPage> {
                 child: Text(
                   item.getValue,
                   style: TextStyle(
-                    height: 1.1,
+                    height: textHeight,
                     fontSize: 18,
                     color: itemKey.contains('favorite')
                         ? backgroundColor
