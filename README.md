@@ -1,6 +1,6 @@
 # memo_app
 
-A new Flutter project.
+Flutter製のスマートフォン向けメモアプリ。
 
 ## Getting Started
 
